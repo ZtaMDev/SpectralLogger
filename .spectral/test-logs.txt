@@ -1,0 +1,2 @@
+[2025-10-06T21:32:38.968Z] [INFO] This will be logged to file AND console
+[2025-10-06T21:32:38.968Z] [SUCCESS] File logging is working!

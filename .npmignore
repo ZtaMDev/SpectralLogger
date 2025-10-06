@@ -1,0 +1,17 @@
+src/
+tests/
+tsconfig.json
+example.js
+.env
+.gitignore
+*.log
+*.tgz
+node_modules/
+.spectral/
+.DS_Store
+.vscode/
+.idea/
+*.test.ts
+*.spec.ts
+coverage/
+.nyc_output/

@@ -1,0 +1,52 @@
+{
+  "name": "spectral",
+  "version": "0.1.0",
+  "description": "The fastest, most elegant logging library for Node.js and TypeScript",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "bin": {
+    "spectral": "dist/cli/index.js"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "private": false,
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "prepublishOnly": "npm run build",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "logger",
+    "logging",
+    "console",
+    "color",
+    "performance",
+    "typescript",
+    "terminal",
+    "cli",
+    "ansi",
+    "colors",
+    "fast"
+  ],
+  "author": "",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yourusername/spectral"
+  },
+  "bugs": {
+    "url": "https://github.com/yourusername/spectral/issues"
+  },
+  "homepage": "https://github.com/yourusername/spectral#readme",
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^24.7.0",
+    "typescript": "^5.9.3"
+  }
+}
