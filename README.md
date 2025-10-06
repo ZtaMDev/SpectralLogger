@@ -1,10 +1,10 @@
-# 🌈 Spectral
+# Spectral
 
 > The fastest, most elegant logging library for Node.js and TypeScript
 
 Spectral is a high-performance, zero-dependency logging library designed to replace `console.log` with beautiful colors, advanced formatting, and incredible speed.
 
-## ✨ Features
+## Features
 
 - **Lightning Fast** - Optimized stdout writing with internal buffering
 - **Rich Colors** - Full support for HEX, RGB, and named colors with automatic terminal detection
@@ -20,7 +20,7 @@ Spectral is a high-performance, zero-dependency logging library designed to repl
 npm install spectral
 ```
 
-## 🚀 Quick Start
+## Quick Start
 
 ```typescript
 import spec from 'spectral';
@@ -33,7 +33,7 @@ spec.error('Error occurred');
 spec.debug('Debug information');
 ```
 
-## 🎨 Custom Colors
+## Custom Colors
 
 Spectral supports multiple color formats:
 
@@ -74,7 +74,7 @@ spec.configure({
 });
 ```
 
-## 🧩 Plugins
+## Plugins
 
 Spectral includes a powerful plugin system for extending functionality.
 
@@ -137,7 +137,7 @@ const myPlugin: Plugin = {
 spec.use(myPlugin);
 ```
 
-## 🛠️ CLI Tools
+## CLI Tools
 
 Spectral includes a CLI for diagnostics and configuration:
 
@@ -165,7 +165,7 @@ npx spectral bench
 npx spectral doctor
 ```
 
-## 🎯 Error Handling
+## Error Handling
 
 Spectral automatically formats Error objects with clean stack traces:
 
@@ -182,7 +182,7 @@ Output includes:
 - Clean, filtered stack trace
 - Duplicate error tracking
 
-## 📊 Performance
+## Performance
 
 Spectral is designed for speed. Run the benchmark to see:
 
@@ -192,7 +192,7 @@ npx spectral bench
 
 Typical results show Spectral is comparable or faster than `console.log` while providing significantly more features.
 
-## 🔧 API Reference
+## API Reference
 
 ### Main Logger Methods
 
@@ -212,7 +212,7 @@ Typical results show Spectral is comparable or faster than `console.log` while p
 - `spec.getErrorStats()` - Get error statistics
 - `spec.clearErrorCache()` - Clear error cache
 
-## 📝 Examples
+## Examples
 
 ### Basic Logging
 
@@ -257,7 +257,7 @@ spec.use(perfTracker);
 spec.info('Logging with multiple plugins');
 ```
 
-## 🌐 Environment Support
+## Environment Support
 
 Spectral automatically detects terminal color support:
 
@@ -267,7 +267,7 @@ Spectral automatically detects terminal color support:
 
 Set `COLORTERM=truecolor` for best results.
 
-## 📄 TypeScript Support
+## TypeScript Support
 
 Spectral is written in TypeScript and includes complete type definitions:
 
@@ -283,15 +283,15 @@ const logger = new SpectralLogger();
 logger.info('Fully typed');
 ```
 
-## 🤝 Contributing
+## Contributing
 
 Contributions are welcome! Please feel free to submit issues and pull requests.
 
-## 📜 License
+## License
 
 MIT
 
-## 🎉 Why Spectral?
+## Why Spectral?
 
 - **Fast**: Optimized for performance with minimal overhead
 - **Beautiful**: Rich colors and clean formatting out of the box
@@ -300,5 +300,3 @@ MIT
 - **Reliable**: Zero dependencies, battle-tested code
 
 ---
-
-Made with ❤️ by the Spectral team
