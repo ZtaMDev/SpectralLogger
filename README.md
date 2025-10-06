@@ -1,4 +1,4 @@
-# Spectral
+# Spectral Logger
 
 > The fastest, most elegant logging library for Node.js and TypeScript
 
