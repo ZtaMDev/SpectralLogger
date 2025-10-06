@@ -1,2 +1,6 @@
 [2025-10-06T21:32:38.968Z] [INFO] This will be logged to file AND console
 [2025-10-06T21:32:38.968Z] [SUCCESS] File logging is working!
+[2025-10-06T21:49:16.951Z] [INFO] This will be logged to file AND console
+[2025-10-06T21:49:16.952Z] [SUCCESS] File logging is working!
+[2025-10-06T21:51:24.618Z] [INFO] This will be logged to file AND console
+[2025-10-06T21:51:24.619Z] [SUCCESS] File logging is working!

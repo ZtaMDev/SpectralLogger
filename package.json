@@ -1,5 +1,5 @@
 {
-  "name": "spectral",
+  "name": "spectraldebug",
   "version": "0.1.0",
   "description": "The fastest, most elegant logging library for Node.js and TypeScript",
   "main": "dist/index.js",
@@ -14,8 +14,8 @@
   ],
   "private": false,
   "scripts": {
-    "build": "tsc",
-    "dev": "tsc --watch",
+    "build": "npx tsc",
+    "dev": "npx tsc --watch",
     "prepublishOnly": "npm run build",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -36,12 +36,12 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/yourusername/spectral"
+    "url": "https://github.com/ZtaMDev/spectral"
   },
   "bugs": {
-    "url": "https://github.com/yourusername/spectral/issues"
+    "url": "https://github.com/ZtaMDev/spectral/issues"
   },
-  "homepage": "https://github.com/yourusername/spectral#readme",
+  "homepage": "https://github.com/ZtaMDev/spectral#readme",
   "engines": {
     "node": ">=18.0.0"
   },
