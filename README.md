@@ -17,7 +17,7 @@ Spectral is a high-performance, zero-dependency logging library designed to repl
 ## 📦 Installation
 
 ```bash
-npm install spectral
+npm install spectralloger
 ```
 
 ## Quick Start
