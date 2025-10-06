@@ -1,5 +1,5 @@
 {
-  "name": "spectraldebug",
+  "name": "spectrallogger",
   "version": "0.1.0",
   "description": "The fastest, most elegant logging library for Node.js and TypeScript",
   "main": "dist/index.js",
