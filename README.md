@@ -217,7 +217,7 @@ Typical results show Spectral is comparable or faster than `console.log` while p
 ### Basic Logging
 
 ```typescript
-import spec from 'spectral';
+import spec from 'spectrallogs';
 
 spec.log('Application started');
 spec.info('Loading configuration...');
@@ -246,7 +246,7 @@ spec.configure({
 ### Using Multiple Plugins
 
 ```typescript
-import spec, { FileLoggerPlugin, PerformanceTrackerPlugin } from 'spectral';
+import spec, { FileLoggerPlugin, PerformanceTrackerPlugin } from 'spectrallogs';
 
 const fileLogger = new FileLoggerPlugin();
 const perfTracker = new PerformanceTrackerPlugin();
@@ -277,7 +277,7 @@ import spec, {
   SpectralConfigOptions,
   Plugin,
   LogLevel
-} from 'spectral';
+} from 'spectrallogs';
 
 const logger = new SpectralLogger();
 logger.info('Fully typed');
