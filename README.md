@@ -83,17 +83,26 @@ Spectral includes a powerful plugin system for extending functionality.
 Save logs to files with automatic rotation:
 
 ```typescript
-import spec, { FileLoggerPlugin } from 'spectrallogs';
+import { Plugin, LogLevel, LogOptions } from 'spectrallogs';
+import spec from "spectrallogs"
 
-const fileLogger = new FileLoggerPlugin({
-  filePath: './logs/app.log',
-  maxSize: 10 * 1024 * 1024, // 10MB
-  rotate: true,
-});
+const myPlugin: Plugin = {
+  name: 'MyCustomPlugin',
 
-spec.use(fileLogger);
+  init() {
+    console.log('Plugin initialized');
+  },
 
-spec.info('This will be logged to console AND file');
+  beforeLog(message: string, level: any, options: any) {
+    return message.toUpperCase();
+  },
+
+  afterLog(message: any, level: any, options: any) {
+    console.log('Log completed');
+  },
+};
+
+spec.use(myPlugin);
 ```
 
 ### Performance Tracker Plugin
