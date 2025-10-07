@@ -1,22 +1,36 @@
 {
   "name": "spectrallogs",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "The fastest, most elegant logging library for Node.js and TypeScript",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.js"
+    },
+    "./web": {
+      "types": "./dist-web/index.d.ts",
+      "import": "./dist-web/index.js"
+    }
+  },
   "bin": {
     "spectral": "dist/cli/index.js"
   },
   "files": [
     "dist",
+    "dist-web",
     "README.md",
     "LICENSE"
   ],
   "private": false,
   "scripts": {
     "build": "npx tsc",
+    "build:web": "npx tsc -p tsconfig.web.json",
+    "build:all": "npm run build && npm run build:web",
     "dev": "npx tsc --watch",
-    "prepublishOnly": "npm run build",
+    "prepublishOnly": "npm run build:all",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [

@@ -266,6 +266,108 @@ spec.use(perfTracker);
 spec.info('Logging with multiple plugins');
 ```
 
+## Browser Usage
+
+Spectral provides a dedicated web build available under the subpath import `spectrallogs/web`. This build is optimized for browsers: it uses CSS styling with `%c`, batching to reduce console overhead, and exposes the same high-level API.
+
+### CDN (esm.sh)
+
+Use the CDN to try Spectral quickly without a bundler:
+
+```html
+<script type="module">
+  import spec from 'https://esm.sh/spectrallogs/web';
+
+  spec.success('Hello from Spectral Web via CDN');
+  spec.info('Colors are applied using CSS styles');
+</script>
+```
+
+You can also instantiate a logger that writes to the DOM for maximum speed (avoiding DevTools overhead):
+
+```html
+<pre id="sink"></pre>
+<script type="module">
+  import { SpectralLoggerWeb } from 'https://esm.sh/spectrallogs/web';
+
+  const sinkEl = document.getElementById('sink');
+  const sink = (args) => { sinkEl.textContent += args.join(' ') + '\n'; };
+  const logger = new SpectralLoggerWeb({ batching: true, sink });
+
+  for (let i = 0; i < 10; i++) logger.info('Fast DOM logging #' + i);
+  logger.flush();
+  logger.error(new Error('Example error'));
+</script>
+```
+
+### Bundlers (Vite, React, etc.)
+
+Install normally and import the web subpath:
+
+```bash
+npm install spectrallogs
+```
+
+In a Vite/React app:
+
+```tsx
+// src/App.tsx
+import { useEffect } from 'react';
+import spec, { SpectralLoggerWeb } from 'spectrallogs/web';
+
+export default function App() {
+  useEffect(() => {
+    spec.success('Spectral Web ready in React');
+
+    // Optional: DOM sink batching
+    const sink = (args: any[]) => console.log(...args);
+    const logger = new SpectralLoggerWeb({ batching: true, sink });
+    logger.info('Batched log via custom sink');
+    logger.flush();
+  }, []);
+  return <div>Open your console to see Spectral logs</div>;
+}
+```
+
+Notes:
+- Use `spectrallogs/web` only in browser contexts. The Node build exports remain under `spectrallogs`.
+- The web build uses CSS for colors and supports features like timestamps, levels, and error formatting.
+- File-based plugins (e.g., `FileLogger`) are not available in web. Use web-specific plugins/utilities instead.
+
+### Local build (without CDN)
+
+If working within this repository, you can build the web bundle and import locally:
+
+```bash
+npm run build:web
+```
+
+```html
+<script type="module">
+  import spec from './dist-web/index.js';
+  spec.info('Loaded from local dist-web');
+  </script>
+```
+
+## Node/Deno Usage (recap)
+
+The Node build (ANSI colors, stdout/stderr buffering) is available at the package root:
+
+```ts
+import spec from 'spectrallogs';
+
+spec.log('Application started');
+spec.info('Loading configuration...');
+spec.success('Configuration loaded successfully');
+```
+
+CommonJS:
+
+```js
+const spec = require('spectrallogs').default;
+spec.warn('CJS usage works as well');
+```
+
 ## Environment Support
 
 Spectral automatically detects terminal color support:
