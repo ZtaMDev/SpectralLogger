@@ -55,7 +55,7 @@ spec.warn('Orange warning', 'orange');
 ## ⚙️ Configuration
 
 ```typescript
-import spec from 'spectralloger';
+import spec, { FileLoggerPlugin } from 'spectralloger';
 
 spec.configure({
   showTimestamp: true,
