@@ -52,7 +52,7 @@ spec.warn('Orange warning', 'orange');
 
 `black`, `red`, `green`, `yellow`, `blue`, `magenta`, `cyan`, `white`, `gray`, `grey`, `orange`, `purple`, `pink`, `brown`, `lime`, `navy`, `teal`, `olive`, `maroon`
 
-## ⚙️ Configuration
+## Configuration
 
 ```typescript
 import spec from 'spectrallogs';
