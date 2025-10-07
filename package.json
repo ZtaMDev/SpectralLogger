@@ -1,6 +1,6 @@
 {
   "name": "spectrallogs",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "The fastest, most elegant logging library for Node.js and TypeScript",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -16,7 +16,7 @@
     }
   },
   "bin": {
-    "spectral": "dist/cli/index.js"
+    "spec": "dist/cli/index.js"
   },
   "files": [
     "dist",

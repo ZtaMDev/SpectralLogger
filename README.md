@@ -1,4 +1,4 @@
-# Spectral Logger
+# Spectral Logs
 
 > The fastest, most elegant logging library for Node.js and TypeScript
 
@@ -170,26 +170,26 @@ Spectral includes a CLI for diagnostics and configuration:
 
 ```bash
 # Show version
-npx spectral --version
+npx spec --version
 
 # Show help
-npx spectral --help
+npx spec --help
 
 # Show current configuration
-npx spectral config
+npx spec config
 
 # Set configuration
-npx spectral config set debugMode=true
-npx spectral config set colors.info=#ff00ff
+npx spec config set debugMode=true
+npx spec config set colors.info=#ff00ff
 
 # Reset configuration
-npx spectral config reset
+npx spec config reset
 
 # Run performance benchmark
-npx spectral bench
+npx spec bench
 
 # Diagnose environment
-npx spectral doctor
+npx spec doctor
 ```
 
 ## Error Handling
@@ -214,7 +214,7 @@ Output includes:
 Spectral is designed for speed. Run the benchmark to see:
 
 ```bash
-npx spectral bench
+npx spec bench
 ```
 
 Typical results show Spectral is comparable or faster than `console.log` while providing significantly more features.
