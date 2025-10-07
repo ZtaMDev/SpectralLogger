@@ -115,9 +115,12 @@ perfTracker.printStats();
 
 ### Creating Custom Plugins
 
+With TypeScript:
+
 ```typescript
-import { Plugin, LogLevel, LogOptions } from 'spectrallogs';
 import spec from "spectrallogs"
+
+import { Plugin } from 'spectrallogs';
 
 const myPlugin: Plugin = {
   name: 'MyCustomPlugin',
@@ -138,6 +141,29 @@ const myPlugin: Plugin = {
 spec.use(myPlugin);
 ```
 
+With JavaScript:
+```javascript
+import spec from "spectrallogs"
+
+const myPlugin = {
+  name: 'MyCustomPlugin',
+
+  init() {
+    console.log('Plugin initialized');
+  },
+
+  beforeLog(message, level, options) {
+    return message.toUpperCase();
+  },
+
+  afterLog(message, level, options) {
+    console.log('Log completed');
+  },
+};
+
+spec.use(myPlugin);
+
+```
 ## CLI Tools
 
 Spectral includes a CLI for diagnostics and configuration:
