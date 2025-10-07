@@ -1,5 +1,5 @@
 {
-  "name": "spectralloger",
+  "name": "spectrallogs",
   "version": "0.1.0",
   "description": "The fastest, most elegant logging library for Node.js and TypeScript",
   "main": "dist/index.js",
@@ -36,12 +36,12 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/ZtaMDev/spectral"
+    "url": "https://github.com/ZtaMDev/SpectralLogger"
   },
   "bugs": {
-    "url": "https://github.com/ZtaMDev/spectral/issues"
+    "url": "https://github.com/ZtaMDev/SpectralLogger/issues"
   },
-  "homepage": "https://github.com/ZtaMDev/spectral#readme",
+  "homepage": "https://github.com/ZtaMDev/SpectralLogger#readme",
   "engines": {
     "node": ">=18.0.0"
   },

@@ -16,11 +16,22 @@ var __exportStar = (this && this.__exportStar) || function(m, exports) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.SpectralConfig = exports.SpectralLogger = void 0;
 const SpectralLogger_1 = require("./core/SpectralLogger");
-const spec = new SpectralLogger_1.SpectralLogger();
-exports.default = spec;
+// Crear una instancia del logger
+const logger = new SpectralLogger_1.SpectralLogger();
+// Exportar la instancia directamente
+exports.default = logger;
+// Exportar la clase para crear nuevas instancias si es necesario
 var SpectralLogger_2 = require("./core/SpectralLogger");
 Object.defineProperty(exports, "SpectralLogger", { enumerable: true, get: function () { return SpectralLogger_2.SpectralLogger; } });
+// Exportar otras clases y tipos
 var SpectralConfig_1 = require("./core/SpectralConfig");
 Object.defineProperty(exports, "SpectralConfig", { enumerable: true, get: function () { return SpectralConfig_1.SpectralConfig; } });
 __exportStar(require("./plugins"), exports);
+// Para compatibilidad con CommonJS
+if (typeof module !== 'undefined' && module.exports) {
+    module.exports = logger;
+    module.exports.default = logger;
+    // Asegurar que los métodos estén disponibles directamente
+    Object.assign(module.exports, logger);
+}
 //# sourceMappingURL=index.js.map

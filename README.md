@@ -17,13 +17,13 @@ Spectral is a high-performance, zero-dependency logging library designed to repl
 ## 📦 Installation
 
 ```bash
-npm install spectralloger
+npm install spectrallogs
 ```
 
 ## Quick Start
 
 ```typescript
-import spec from 'spectral';
+import spec from 'spectrallogs';
 
 spec.log('Hello Spectral!');
 spec.info('Informational message');
@@ -55,7 +55,7 @@ spec.warn('Orange warning', 'orange');
 ## ⚙️ Configuration
 
 ```typescript
-import spec from 'spectral';
+import spec from 'spectrallogs';
 
 spec.configure({
   showTimestamp: true,
@@ -83,7 +83,7 @@ Spectral includes a powerful plugin system for extending functionality.
 Save logs to files with automatic rotation:
 
 ```typescript
-import spec, { FileLoggerPlugin } from 'spectral';
+import spec, { FileLoggerPlugin } from 'spectrallogs';
 
 const fileLogger = new FileLoggerPlugin({
   filePath: './logs/app.log',
@@ -101,7 +101,7 @@ spec.info('This will be logged to console AND file');
 Track logging performance metrics:
 
 ```typescript
-import spec, { PerformanceTrackerPlugin } from 'spectral';
+import spec, { PerformanceTrackerPlugin } from 'spectrallogs';
 
 const perfTracker = new PerformanceTrackerPlugin();
 spec.use(perfTracker);
@@ -116,7 +116,7 @@ perfTracker.printStats();
 ### Creating Custom Plugins
 
 ```typescript
-import { Plugin, LogLevel, LogOptions } from 'spectral';
+import { Plugin, LogLevel, LogOptions } from 'spectrallogs';
 
 const myPlugin: Plugin = {
   name: 'MyCustomPlugin',

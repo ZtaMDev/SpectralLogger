@@ -1,7 +1,7 @@
 import { SpectralLogger } from './core/SpectralLogger';
 import type { LogLevel, ColorInput, SpectralConfigOptions, LogOptions, FormattedMessage, Plugin } from './types';
-declare const spec: SpectralLogger;
-export default spec;
+declare const logger: SpectralLogger;
+export default logger;
 export { SpectralLogger } from './core/SpectralLogger';
 export { SpectralConfig } from './core/SpectralConfig';
 export { ErrorEntry } from './core/SpectralError';
