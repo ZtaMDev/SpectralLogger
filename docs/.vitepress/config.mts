@@ -8,6 +8,8 @@ export default defineConfig({
   head: [
     ['link', { rel: 'icon', type: 'image/png', href: '/logo.png' }],
     ['link', { rel: 'shortcut icon', type: 'image/png', href: '/logo.png' }],
+    ['link', { rel: 'favicon', type: 'image/x-icon', href: '/favicon.ico' }],
+    ['link', { rel: 'apple-touch-icon', href: '/favicon.ico' }],
     ['meta', { name: 'theme-color', content: '#111827' }],
     ['meta', { property: 'og:image', content: '/logo.png' }]
   ],
