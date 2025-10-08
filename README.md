@@ -1,3 +1,7 @@
+<div align="center">
+
+<img width="200" height="200" alt="logo" src="https://github.com/user-attachments/assets/61d5bbae-26c8-45fc-83b3-84ab2181aa77" />
+
 # Spectral Logs
 
 > The fastest, most elegant logging library for Node.js and TypeScript
@@ -6,6 +10,9 @@ Spectral is a high-performance, zero-dependency logging library designed to repl
 
 Official [Website](https://ztamdev.github.io/SpectralLogs)
 Documentation [Docs](https://ztamdev.github.io/SpectralLogs/getting-started.html)
+
+</div>
+
 
 ## Features
 
@@ -17,7 +24,7 @@ Documentation [Docs](https://ztamdev.github.io/SpectralLogs/getting-started.html
 - **Zero Dependencies** - Minimal footprint, maximum performance
 - **CLI Tools** - Built-in diagnostics, benchmarking, and configuration management
 
-## 📦 Installation
+## Installation
 
 ```bash
 npm install spectrallogs
