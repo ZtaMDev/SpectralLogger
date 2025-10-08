@@ -4,6 +4,13 @@ exports.SpectralLoggerWeb = void 0;
 const WebFormatter_js_1 = require("./WebFormatter.js");
 const WebOutput_js_1 = require("./WebOutput.js");
 const WebError_js_1 = require("./WebError.js");
+/**
+ * High-performance, browser-friendly logger.
+ *
+ * Uses CSS-styled segments with `%c`, optional batching to reduce console overhead,
+ * and supports pluggable hooks before/after each log call. Designed for use via
+ * the `spectrallogs/web` subpath import.
+ */
 class SpectralLoggerWeb {
     config = {
         showTimestamp: true,
@@ -23,6 +30,10 @@ class SpectralLoggerWeb {
     formatter;
     errorHandler;
     plugins = [];
+    /**
+     * Create a web logger.
+     * @param outputOptions Configure batching and/or a custom sink (e.g., DOM appender)
+     */
     constructor(outputOptions = {}) {
         this.output = new WebOutput_js_1.WebOutput(outputOptions);
         this.formatter = new WebFormatter_js_1.WebFormatter({
@@ -32,6 +43,10 @@ class SpectralLoggerWeb {
         });
         this.errorHandler = new WebError_js_1.WebErrorHandler(this.formatter);
     }
+    /**
+     * Update runtime configuration (colors, timestamp/level visibility, debug mode, etc.).
+     * @param options Partial configuration to merge with current settings
+     */
     configure(options) {
         if (options.showTimestamp !== undefined)
             this.config.showTimestamp = options.showTimestamp;
@@ -52,6 +67,10 @@ class SpectralLoggerWeb {
         // ErrorHandler sigue usando el formatter actualizado por referencia
         this.errorHandler = new WebError_js_1.WebErrorHandler(this.formatter);
     }
+    /**
+     * Register a plugin to execute hooks before/after each log.
+     * @param plugin Plugin with optional `init`, `beforeLog`, and `afterLog`
+     */
     use(plugin) {
         this.plugins.push(plugin);
         if (plugin.init)
@@ -92,15 +111,25 @@ class SpectralLoggerWeb {
         this.output.writeConsoleArgs(formatted.args, level);
         this.executePlugins(before, level, options, 'after');
     }
+    /** Log a general message. */
     log(message, color) { this.writeLog(message, 'log', color); }
+    /** Log an informational message. */
     info(message, color) { this.writeLog(message, 'info', color); }
+    /** Log a success message. */
     success(message, color) { this.writeLog(message, 'success', color); }
+    /** Log a warning message. */
     warn(message, color) { this.writeLog(message, 'warn', color); }
+    /** Log an error. Accepts `Error` objects for rich stack formatting. */
     error(message, color) { this.writeLog(message, 'error', color); }
+    /** Log a debug message (emitted only when `debugMode` is enabled). */
     debug(message, color) { this.writeLog(message, 'debug', color); }
+    /** Force-flush any buffered output. */
     flush() { this.output.flush(); }
+    /** Get current resolved configuration. */
     getConfig() { return { ...this.config, colors: { ...this.config.colors } }; }
+    /** Get error cache and counters. */
     getErrorStats() { return this.errorHandler.getErrorStats(); }
+    /** Clear the internal error cache. */
     clearErrorCache() { this.errorHandler.clearCache(); }
 }
 exports.SpectralLoggerWeb = SpectralLoggerWeb;

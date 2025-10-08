@@ -1,12 +1,20 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.SpectralConfig = void 0;
+/**
+ * Global configuration singleton for Spectral (Node build).
+ */
 class SpectralConfig {
     static instance;
+    /** Default text encoding for stdout/stderr writes. */
     codec = 'utf-8';
+    /** Show short timestamp (HH:MM:SS) before each message. */
     showTimestamp = true;
+    /** Show level label (e.g., [INFO]) before each message. */
     showLevel = true;
+    /** Emit debug-level logs when enabled. */
     debugMode = false;
+    /** Timestamp format used in some helpers. */
     timeFormat = 'iso';
     colors = {
         info: '#00bfff',
@@ -17,12 +25,18 @@ class SpectralConfig {
         debug: '#cc66ff',
     };
     constructor() { }
+    /**
+     * Access the global configuration instance.
+     */
     static getInstance() {
         if (!SpectralConfig.instance) {
             SpectralConfig.instance = new SpectralConfig();
         }
         return SpectralConfig.instance;
     }
+    /**
+     * Merge the provided partial options into the current configuration.
+     */
     configure(options) {
         if (options.codec !== undefined) {
             this.codec = options.codec;
@@ -43,6 +57,7 @@ class SpectralConfig {
             this.colors = { ...this.colors, ...options.colors };
         }
     }
+    /** Reset all options to their defaults. */
     reset() {
         this.codec = 'utf-8';
         this.showTimestamp = true;
@@ -58,6 +73,7 @@ class SpectralConfig {
             debug: '#cc66ff',
         };
     }
+    /** Get a full, frozen-like copy of the current configuration. */
     getConfig() {
         return {
             codec: this.codec,

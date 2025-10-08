@@ -1,11 +1,20 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.WebOutput = void 0;
+/**
+ * Buffered output for browsers with optional batching.
+ *
+ * Default sink is `console.log`. You can provide a custom `sink` to send
+ * messages to the DOM or elsewhere.
+ */
 class WebOutput {
     buffer = [];
     options;
     scheduled = false;
     channel;
+    /**
+     * @param options Configure batching thresholds and custom sink
+     */
     constructor(options = {}) {
         this.options = {
             batching: options.batching ?? true,
@@ -26,6 +35,11 @@ class WebOutput {
             }
         }
     }
+    /**
+     * Queue or immediately write a pre-formatted set of console arguments.
+     * @param args Arguments array suitable for `console.log(...args)`
+     * @param _level Log level (currently unused for routing)
+     */
     writeConsoleArgs(args, _level) {
         if (!this.options.batching) {
             this.options.sink(args);
@@ -51,6 +65,7 @@ class WebOutput {
         this.channel?.port2.postMessage?.(null);
         setTimeout(() => this.flush(), this.options.maxLatencyMs);
     }
+    /** Flush any buffered messages via the configured sink. */
     flush() {
         if (!this.buffer.length) {
             this.scheduled = false;

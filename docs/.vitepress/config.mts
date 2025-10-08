@@ -1,0 +1,47 @@
+// docs/.vitepress/config.mts
+import { defineConfig } from 'vitepress';
+
+export default defineConfig({
+  title: 'SpectralLogs',
+  base: '/SpectralLogs/',
+  description: 'High-performance logging for Node & Web',
+  head: [
+    ['link', { rel: 'icon', type: 'image/png', href: '/logo.png' }],
+    ['link', { rel: 'shortcut icon', type: 'image/png', href: '/logo.png' }],
+    ['meta', { name: 'theme-color', content: '#111827' }],
+    ['meta', { property: 'og:image', content: '/logo.png' }]
+  ],
+  themeConfig: {
+    logo: '/logo.png',
+    nav: [
+      { text: 'Getting Started', link: '/getting-started' },
+      { text: 'Configuration', link: '/configuration' },
+      { text: 'Overview', link: '/overview' },
+      { text: 'Node', link: '/node' },
+      { text: 'Web', link: '/web' },
+      { text: 'Plugins', link: '/plugins' },
+      { text: 'API', link: '/api' },
+    ],
+    sidebar: [
+      {
+        text: 'Guide',
+        items: [
+          { text: 'Getting Started', link: '/getting-started' },
+          { text: 'Configuration', link: '/configuration' },
+          { text: 'Overview', link: '/overview' },
+          { text: 'Node', link: '/node' },
+          { text: 'Web', link: '/web' },
+          { text: 'Plugins', link: '/plugins' },
+          { text: 'API', link: '/api' },
+        ],
+      },
+    ],
+    footer: {
+      message:
+        'Created by <a href="https://github.com/ZtaMDev" target="_blank" rel="noopener">ZtaMDev</a> · '
+        + '<a href="https://github.com/ZtaMDev/SpectralLogs" target="_blank" rel="noopener">GitHub</a> · '
+        + '<a href="https://www.npmjs.com/package/spectrallogs" target="_blank" rel="noopener">npm</a>',
+      copyright: ' 2025 SpectralLogs'
+    }
+  },
+});

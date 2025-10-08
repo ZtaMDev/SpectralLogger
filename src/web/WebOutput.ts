@@ -17,19 +17,33 @@ interface BatchItem { args: any[] }
 
 type Sink = (args: any[]) => void;
 
+/** Options to control WebOutput behavior. */
 export interface WebOutputOptions {
+  /** Enable message batching to reduce console overhead. */
   batching?: boolean;
+  /** Max messages in buffer before a forced flush. */
   maxBatchSize?: number; // número de mensajes antes de flush
+  /** Max latency before an automatic flush (in ms). */
   maxLatencyMs?: number; // tiempo máximo antes de flush
+  /** Alternate sink for messages (e.g., append to DOM). */
   sink?: Sink; // destino alternativo
 }
 
+/**
+ * Buffered output for browsers with optional batching.
+ *
+ * Default sink is `console.log`. You can provide a custom `sink` to send
+ * messages to the DOM or elsewhere.
+ */
 export class WebOutput {
   private buffer: BatchItem[] = [];
   private options: Required<WebOutputOptions>;
   private scheduled = false;
   private channel?: AnyMessageChannel;
 
+  /**
+   * @param options Configure batching thresholds and custom sink
+   */
   constructor(options: WebOutputOptions = {}) {
     this.options = {
       batching: options.batching ?? true,
@@ -51,6 +65,11 @@ export class WebOutput {
     }
   }
 
+  /**
+   * Queue or immediately write a pre-formatted set of console arguments.
+   * @param args Arguments array suitable for `console.log(...args)`
+   * @param _level Log level (currently unused for routing)
+   */
   public writeConsoleArgs(args: any[], _level: LogLevel): void {
     if (!this.options.batching) {
       this.options.sink(args);
@@ -78,6 +97,7 @@ export class WebOutput {
     setTimeout(() => this.flush(), this.options.maxLatencyMs);
   }
 
+  /** Flush any buffered messages via the configured sink. */
   public flush(): void {
     if (!this.buffer.length) { this.scheduled = false; return; }
     const items = this.buffer;

@@ -1,4 +1,4 @@
-const spec = require('./dist/index').default;
+const spec = require('../../dist/index').default;
 
 console.log('\n=== Spectral Logger Demo ===\n');
 

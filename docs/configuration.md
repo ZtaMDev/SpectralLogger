@@ -1,0 +1,86 @@
+# Configuration
+
+This page explains how to configure SpectralLogs at runtime in both Node and Web builds, and how to inspect/clear diagnostics.
+
+- Node entry: `spectrallogs`
+- Web entry: `spectrallogs/web`
+
+## Configure
+
+Use `configure()` to update settings dynamically.
+
+```ts
+// Node
+import spec from 'spectrallogs';
+
+spec.configure({
+  showTimestamp: true,
+  showLevel: true,
+  debugMode: false,
+  timeFormat: 'iso', // 'iso' | 'unix' | 'locale'
+  colors: {
+    info: '#00bfff', success: '#00ff88', warn: '#ffaa00',
+    error: '#ff5555', log: '#dddddd', debug: '#cc66ff',
+  },
+});
+```
+
+```ts
+// Web
+import spec from 'spectrallogs/web';
+
+spec.configure({
+  showTimestamp: true,
+  showLevel: true,
+  debugMode: true,
+  colors: {
+    info: '#00bfff', success: '#00ff88', warn: '#ffaa00',
+    error: '#ff5555', log: '#dddddd', debug: '#cc66ff',
+  },
+});
+```
+
+Notes:
+- Web build ignores Node-only concerns like file-based plugins and `codec`.
+- Colors in Node use ANSI; in Web they translate to CSS.
+
+## Get current config
+
+```ts
+const cfg = spec.getConfig();
+```
+
+## Debug mode
+
+```ts
+spec.configure({ debugMode: true });
+spec.debug('Only shown when debugMode=true');
+```
+
+## Flush
+
+```ts
+spec.flush();
+// Node: force flush buffered stdout/stderr
+// Web: flush the batching queue
+```
+
+## Error diagnostics
+
+Inspect and clear internal error cache:
+
+```ts
+const stats = spec.getErrorStats();
+spec.clearErrorCache();
+```
+
+## CDN version pinning
+
+Use pinned versions for reproducible builds:
+
+```html
+<script type="module">
+  import spec from 'https://esm.sh/spectrallogs@1.0.4/web';
+  spec.info('Pinned version');
+</script>
+```

@@ -1,0 +1,18 @@
+/* SpectralLogs docs theme customizations */
+
+/* Prefer VitePress CSS variables for hero sizing */
+:root {
+  --vp-home-hero-image-width: 640px;
+  --vp-home-hero-image-height: 640px;
+}
+
+/* Ensure object-fit for crisp rendering */
+.VPHero .image img { object-fit: contain; }
+
+/* Small screens */
+@media (max-width: 560px) {
+  :root {
+    --vp-home-hero-image-width: 320px;
+    --vp-home-hero-image-height: 320px;
+  }
+}

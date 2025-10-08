@@ -3,13 +3,25 @@ import { SpectralConfig } from './SpectralConfig';
 import { colorize } from '../utils/colors';
 import { getShortTimestamp } from '../utils/time';
 
+/**
+ * Formats messages with timestamp, level, and colorization (ANSI) for Node.
+ */
 export class SpectralFormatter {
   private config: SpectralConfig;
 
+  /**
+   * @param config Global Spectral configuration used to determine colors and flags
+   */
   constructor(config: SpectralConfig) {
     this.config = config;
   }
 
+  /**
+   * Build the final, colorized line to be written to the terminal.
+   * @param message Plain message text (already stringified)
+   * @param level Log level
+   * @param options Per-call options (overrides)
+   */
   public format(
     message: string,
     level: LogLevel,
@@ -38,10 +50,16 @@ export class SpectralFormatter {
     return parts.join(' ');
   }
 
+  /**
+   * Resolve the color associated with a given log level.
+   */
   private getLevelColor(level: LogLevel): string {
     return this.config.colors[level] || this.config.colors.log;
   }
 
+  /**
+   * Format an Error with name, message and a cleaned stack trace.
+   */
   public formatError(error: Error): string {
     const errorColor = this.config.colors.error;
     const parts: string[] = [];
@@ -58,6 +76,9 @@ export class SpectralFormatter {
     return parts.join('\n');
   }
 
+  /**
+   * Remove noisy frames (e.g., node_modules) and normalize spacing.
+   */
   private cleanStackTrace(stack: string): string {
     const lines = stack.split('\n');
     return lines

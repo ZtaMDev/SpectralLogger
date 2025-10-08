@@ -1,0 +1,58 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>SpectralLogger Web Demo</title>
+    <style>
+      body { font-family: system-ui, sans-serif; padding: 24px; }
+      pre#sink { background: #0b0b0b; color: #eaeaea; padding: 12px; border-radius: 8px; height: 240px; overflow: auto; }
+      .row { margin: 12px 0; }
+      button { margin-right: 8px; }
+    </style>
+  </head>
+  <body>
+    <h1>SpectralLogger Web Demo</h1>
+    <div class="row">
+      <button id="btn-log">Log x100</button>
+      <button id="btn-error">Error</button>
+      <button id="btn-config">Toggle Debug</button>
+    </div>
+    <pre id="sink"></pre>
+
+    <script type="module">
+      // Local dev after building dist-web: import from relative path
+      //import spec from '../../dist-web/index.js';
+
+      // CDN (esm.sh) usage:
+      //import spec from 'https://esm.sh/spectrallogs/web';
+
+      const sinkEl = document.getElementById('sink');
+      const sink = (args) => {
+        const text = args.map(String).join(' ');
+        sinkEl.textContent += text + '\n';
+      };
+
+      // Recreate logger with DOM sink batching
+      // @ts-ignore - access constructor via named export
+      //import { SpectralLoggerWeb } from 'https://esm.sh/spectrallogs/web';
+      const domLogger = new SpectralLoggerWeb({ batching: true, sink });
+
+      document.getElementById('btn-log').addEventListener('click', () => {
+        for (let i = 0; i < 100; i++) domLogger.info('Hello Spectral Web #' + i, '#00bfff');
+        domLogger.flush();
+      });
+      document.getElementById('btn-error').addEventListener('click', () => {
+        try { throw new Error('Something went wrong'); } catch (e) { domLogger.error(e); }
+      });
+      document.getElementById('btn-config').addEventListener('click', () => {
+        const cfg = domLogger.getConfig();
+        domLogger.configure({ debugMode: !cfg.debugMode });
+        domLogger.debug('Debug toggled to ' + (!cfg.debugMode));
+      });
+
+      // Console demo as well
+      spec.success('SpectralLogger (web) ready!');
+    </script>
+  </body>
+</html>

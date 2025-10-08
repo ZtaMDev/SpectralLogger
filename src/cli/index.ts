@@ -20,7 +20,7 @@ function showHelp(): void {
 Spectral CLI - The fastest logging library for Node.js
 
 Usage:
-  spectral [command] [options]
+  spec [command] [options]
 
 Commands:
   --version, -v       Show version
@@ -32,11 +32,11 @@ Commands:
   doctor              Diagnose environment and color support
 
 Examples:
-  spectral --version
-  spectral config
-  spectral config set debugMode=true
-  spectral bench
-  spectral doctor
+  spec --version
+  spec config
+  spec config set debugMode=true
+  spec bench
+  spec doctor
 `);
 }
 
