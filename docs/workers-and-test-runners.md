@@ -13,8 +13,8 @@ import spec from 'spectrallogs';
 import { parentPort } from 'worker_threads';
 
 const log = spec.child('w1');
-function emit(level: 'info'|'warn'|'error'|'log', msg: string) {
-  parentPort!.postMessage({ level, msg });
+function emit(level, msg) {
+  parentPort.postMessage({ level, msg });
 }
 
 emit('info', 'ready');
@@ -29,7 +29,7 @@ const main = spec.child('main');
 const worker = new Worker('./worker.js');
 
 worker.on('message', ({ level, msg }) => {
-  (main as any)[level](msg); // writes through a single sink
+  (main)[level](msg); // writes through a single sink
 });
 ```
 
