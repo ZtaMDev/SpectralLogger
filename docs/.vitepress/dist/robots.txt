@@ -1,0 +1,6 @@
+# SpectralLogs Docs robots.txt
+User-agent: *
+Allow: /
+
+# Sitemap for GitHub Pages project site
+Sitemap: https://ztamdev.github.io/SpectralLogs/sitemap.xml
