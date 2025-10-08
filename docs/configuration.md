@@ -17,6 +17,7 @@ spec.configure({
   showTimestamp: true,
   showLevel: true,
   debugMode: false,
+  bufferWrites: true, // disable stdout/stderr buffering (Node)
   timeFormat: 'iso', // 'iso' | 'unix' | 'locale'
   colors: {
     info: '#00bfff', success: '#00ff88', warn: '#ffaa00',
@@ -33,6 +34,7 @@ spec.configure({
   showTimestamp: true,
   showLevel: true,
   debugMode: true,
+  // bufferWrites is Node-only; ignored in Web
   colors: {
     info: '#00bfff', success: '#00ff88', warn: '#ffaa00',
     error: '#ff5555', log: '#dddddd', debug: '#cc66ff',
@@ -41,7 +43,7 @@ spec.configure({
 ```
 
 Notes:
-- Web build ignores Node-only concerns like file-based plugins and `codec`.
+- Web build ignores Node-only concerns like `bufferWrites` and `codec`.
 - Colors in Node use ANSI; in Web they translate to CSS.
 
 ## Get current config

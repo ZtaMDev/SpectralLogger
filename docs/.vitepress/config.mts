@@ -18,7 +18,8 @@ export default defineConfig({
     nav: [
       { text: 'Getting Started', link: '/getting-started' },
       { text: 'Configuration', link: '/configuration' },
-      { text: 'Overview', link: '/overview' },
+      { text: 'How it works', link: '/how-it-works' },
+      { text: 'Workers + Tests', link: '/workers-and-test-runners' },
       { text: 'Node', link: '/node' },
       { text: 'Web', link: '/web' },
       { text: 'Plugins', link: '/plugins' },
@@ -30,7 +31,8 @@ export default defineConfig({
         items: [
           { text: 'Getting Started', link: '/getting-started' },
           { text: 'Configuration', link: '/configuration' },
-          { text: 'Overview', link: '/overview' },
+          { text: 'How it works', link: '/how-it-works' },
+          { text: 'Workers + Test Runners', link: '/workers-and-test-runners' },
           { text: 'Node', link: '/node' },
           { text: 'Web', link: '/web' },
           { text: 'Plugins', link: '/plugins' },

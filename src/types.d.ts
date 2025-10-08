@@ -7,6 +7,10 @@ export interface SpectralConfigOptions {
   showTimestamp?: boolean;
   showLevel?: boolean;
   debugMode?: boolean;
+  /** Enable buffered writes to stdout/stderr (Node). Default: true, but disabled in NODE_ENV=test */
+  bufferWrites?: boolean;
+  /** Experimental: attempt async stack stitching in Node (no-op in Web). Default: false. */
+  asyncStacks?: boolean;
   colors?: {
     info?: string;
     success?: string;

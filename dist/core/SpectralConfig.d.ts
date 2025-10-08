@@ -14,6 +14,10 @@ export declare class SpectralConfig {
     debugMode: boolean;
     /** Timestamp format used in some helpers. */
     timeFormat: 'iso' | 'unix' | 'locale';
+    /** Override for buffering behavior. When undefined, falls back to env default. */
+    bufferWrites: boolean | undefined;
+    /** Experimental: attempt async stack stitching in Node. */
+    asyncStacks: boolean;
     colors: {
         info: string;
         success: string;

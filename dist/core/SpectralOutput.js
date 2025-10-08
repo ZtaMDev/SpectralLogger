@@ -1,10 +1,17 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.SpectralOutput = void 0;
+// Cache environment flags once at module load to avoid per-log lookups
+const CACHED_NODE_ENV = process.env.NODE_ENV;
+const IS_TEST_ENV = CACHED_NODE_ENV === 'test';
 class SpectralOutput {
     buffer = [];
     bufferSize = 10;
     flushTimer = null;
+    config;
+    constructor(config) {
+        this.config = config;
+    }
     write(message, level, codec = 'utf-8') {
         const stream = level === 'error' || level === 'warn' ? process.stderr : process.stdout;
         const finalMessage = message.endsWith('\n') ? message : `${message}\n`;
@@ -22,7 +29,9 @@ class SpectralOutput {
         }
     }
     shouldBuffer() {
-        return process.env.NODE_ENV !== 'test';
+        // Prefer explicit config; fallback to env-based default
+        const resolved = this.config.getConfig().bufferWrites;
+        return resolved;
     }
     scheduleFlush(stream, codec) {
         if (this.flushTimer)

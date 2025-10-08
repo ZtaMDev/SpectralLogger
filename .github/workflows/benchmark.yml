@@ -1,0 +1,57 @@
+name: Benchmarks
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  bench:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install
+        run: npm ci
+
+      - name: Build (Node + Web)
+        run: npm run build:all
+
+      - name: Run benchmark
+        env:
+          NODE_ENV: production
+        run: |
+          node dist/cli/index.js bench | tee bench.out
+
+      - name: Summarize results
+        shell: bash
+        run: |
+          echo "## SpectralLogs Benchmark" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo '\`NODE_ENV=production\`' >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          tail -n 10 bench.out | sed 's/^/    /' >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          # Try to extract the percentage line
+          IMPROVE_LINE=$(grep -E "Spectral is .*% faster" -m1 bench.out || true)
+          if [ -n "$IMPROVE_LINE" ]; then
+            echo "**Summary:** $IMPROVE_LINE" >> $GITHUB_STEP_SUMMARY
+          else
+            # Fallback: extract both timing lines
+            CONSOLE_LINE=$(grep -E "console\.log:" -m1 bench.out || true)
+            SPECTRAL_LINE=$(grep -E "Spectral:\s+" -m1 bench.out || true)
+            if [ -n "$CONSOLE_LINE" ] && [ -n "$SPECTRAL_LINE" ]; then
+              echo "**Summary:**" >> $GITHUB_STEP_SUMMARY
+              echo "- $CONSOLE_LINE" >> $GITHUB_STEP_SUMMARY
+              echo "- $SPECTRAL_LINE" >> $GITHUB_STEP_SUMMARY
+            fi
+          fi

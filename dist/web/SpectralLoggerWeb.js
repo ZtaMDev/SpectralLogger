@@ -30,11 +30,12 @@ class SpectralLoggerWeb {
     formatter;
     errorHandler;
     plugins = [];
+    scope;
     /**
      * Create a web logger.
      * @param outputOptions Configure batching and/or a custom sink (e.g., DOM appender)
      */
-    constructor(outputOptions = {}) {
+    constructor(outputOptions = {}, scope) {
         this.output = new WebOutput_js_1.WebOutput(outputOptions);
         this.formatter = new WebFormatter_js_1.WebFormatter({
             showTimestamp: this.config.showTimestamp,
@@ -42,6 +43,7 @@ class SpectralLoggerWeb {
             colors: this.config.colors,
         });
         this.errorHandler = new WebError_js_1.WebErrorHandler(this.formatter);
+        this.scope = scope;
     }
     /**
      * Update runtime configuration (colors, timestamp/level visibility, debug mode, etc.).
@@ -106,10 +108,30 @@ class SpectralLoggerWeb {
             messageStr = String(message);
         }
         const options = { color };
-        const before = this.executePlugins(messageStr, level, options, 'before');
+        let before = this.executePlugins(messageStr, level, options, 'before');
+        if (this.scope)
+            before = `[${this.scope}] ${before}`;
         const formatted = this.formatter.format(before, level, options);
         this.output.writeConsoleArgs(formatted.args, level);
         this.executePlugins(before, level, options, 'after');
+    }
+    /** Create a child logger that prefixes messages with a scope and inherits config/plugins/output. */
+    child(scope) {
+        const child = new SpectralLoggerWeb({}, scope);
+        // Inherit config
+        child.config = { ...this.config, colors: { ...this.config.colors } };
+        // Recreate formatter with copied config
+        child.formatter = new WebFormatter_js_1.WebFormatter({
+            showTimestamp: child.config.showTimestamp,
+            showLevel: child.config.showLevel,
+            colors: child.config.colors,
+        });
+        // Share same output and error handler base
+        child.output = this.output;
+        child.errorHandler = new WebError_js_1.WebErrorHandler(child.formatter);
+        // Copy plugins
+        child.plugins = [...this.plugins];
+        return child;
     }
     /** Log a general message. */
     log(message, color) { this.writeLog(message, 'log', color); }

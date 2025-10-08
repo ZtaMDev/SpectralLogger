@@ -30,12 +30,13 @@ export class SpectralLoggerWeb {
   private formatter: WebFormatter;
   private errorHandler: WebErrorHandler;
   private plugins: PluginWeb[] = [];
+  private scope?: string;
 
   /**
    * Create a web logger.
    * @param outputOptions Configure batching and/or a custom sink (e.g., DOM appender)
    */
-  constructor(outputOptions: ConstructorParameters<typeof WebOutput>[0] = {}) {
+  constructor(outputOptions: ConstructorParameters<typeof WebOutput>[0] = {}, scope?: string) {
     this.output = new WebOutput(outputOptions);
     this.formatter = new WebFormatter({
       showTimestamp: this.config.showTimestamp,
@@ -43,6 +44,7 @@ export class SpectralLoggerWeb {
       colors: this.config.colors as any,
     });
     this.errorHandler = new WebErrorHandler(this.formatter);
+    this.scope = scope;
   }
 
   /**
@@ -102,10 +104,30 @@ export class SpectralLoggerWeb {
     }
 
     const options: LogOptionsWeb = { color };
-    const before = this.executePlugins(messageStr, level, options, 'before');
+    let before = this.executePlugins(messageStr, level, options, 'before');
+    if (this.scope) before = `[${this.scope}] ${before}`;
     const formatted = this.formatter.format(before, level, options);
     this.output.writeConsoleArgs(formatted.args, level);
     this.executePlugins(before, level, options, 'after');
+  }
+
+  /** Create a child logger that prefixes messages with a scope and inherits config/plugins/output. */
+  public child(scope: string): SpectralLoggerWeb {
+    const child = new SpectralLoggerWeb({}, scope);
+    // Inherit config
+    child.config = { ...this.config, colors: { ...this.config.colors } } as any;
+    // Recreate formatter with copied config
+    child.formatter = new WebFormatter({
+      showTimestamp: child.config.showTimestamp,
+      showLevel: child.config.showLevel,
+      colors: child.config.colors as any,
+    });
+    // Share same output and error handler base
+    child.output = this.output;
+    child.errorHandler = new WebErrorHandler(child.formatter);
+    // Copy plugins
+    child.plugins = [...this.plugins];
+    return child;
   }
 
   /** Log a general message. */

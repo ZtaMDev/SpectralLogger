@@ -1,6 +1,8 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.SpectralConfig = void 0;
+// Cache env once to avoid repeated lookups
+const CACHED_NODE_ENV = process.env.NODE_ENV;
 /**
  * Global configuration singleton for Spectral (Node build).
  */
@@ -16,6 +18,10 @@ class SpectralConfig {
     debugMode = false;
     /** Timestamp format used in some helpers. */
     timeFormat = 'iso';
+    /** Override for buffering behavior. When undefined, falls back to env default. */
+    bufferWrites = undefined;
+    /** Experimental: attempt async stack stitching in Node. */
+    asyncStacks = false;
     colors = {
         info: '#00bfff',
         success: '#00ff88',
@@ -50,6 +56,12 @@ class SpectralConfig {
         if (options.debugMode !== undefined) {
             this.debugMode = options.debugMode;
         }
+        if (options.bufferWrites !== undefined) {
+            this.bufferWrites = options.bufferWrites;
+        }
+        if (options.asyncStacks !== undefined) {
+            this.asyncStacks = options.asyncStacks;
+        }
         if (options.timeFormat !== undefined) {
             this.timeFormat = options.timeFormat;
         }
@@ -64,6 +76,8 @@ class SpectralConfig {
         this.showLevel = true;
         this.debugMode = false;
         this.timeFormat = 'iso';
+        this.bufferWrites = undefined;
+        this.asyncStacks = false;
         this.colors = {
             info: '#00bfff',
             success: '#00ff88',
@@ -75,12 +89,15 @@ class SpectralConfig {
     }
     /** Get a full, frozen-like copy of the current configuration. */
     getConfig() {
+        const resolvedBufferWrites = this.bufferWrites ?? (CACHED_NODE_ENV !== 'test');
         return {
             codec: this.codec,
             showTimestamp: this.showTimestamp,
             showLevel: this.showLevel,
             debugMode: this.debugMode,
             timeFormat: this.timeFormat,
+            bufferWrites: resolvedBufferWrites,
+            asyncStacks: this.asyncStacks,
             colors: { ...this.colors },
         };
     }

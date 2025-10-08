@@ -1,5 +1,8 @@
 import { SpectralConfigOptions } from '../types';
 
+// Cache env once to avoid repeated lookups
+const CACHED_NODE_ENV = process.env.NODE_ENV;
+
 /**
  * Global configuration singleton for Spectral (Node build).
  */
@@ -16,6 +19,10 @@ export class SpectralConfig {
   public debugMode: boolean = false;
   /** Timestamp format used in some helpers. */
   public timeFormat: 'iso' | 'unix' | 'locale' = 'iso';
+  /** Override for buffering behavior. When undefined, falls back to env default. */
+  public bufferWrites: boolean | undefined = undefined;
+  /** Experimental: attempt async stack stitching in Node. */
+  public asyncStacks: boolean = false;
 
   public colors = {
     info: '#00bfff',
@@ -54,6 +61,12 @@ export class SpectralConfig {
     if (options.debugMode !== undefined) {
       this.debugMode = options.debugMode;
     }
+    if (options.bufferWrites !== undefined) {
+      this.bufferWrites = options.bufferWrites;
+    }
+    if (options.asyncStacks !== undefined) {
+      this.asyncStacks = options.asyncStacks;
+    }
     if (options.timeFormat !== undefined) {
       this.timeFormat = options.timeFormat;
     }
@@ -69,6 +82,8 @@ export class SpectralConfig {
     this.showLevel = true;
     this.debugMode = false;
     this.timeFormat = 'iso';
+    this.bufferWrites = undefined;
+    this.asyncStacks = false;
     this.colors = {
       info: '#00bfff',
       success: '#00ff88',
@@ -81,12 +96,15 @@ export class SpectralConfig {
 
   /** Get a full, frozen-like copy of the current configuration. */
   public getConfig(): Required<SpectralConfigOptions> {
+    const resolvedBufferWrites = this.bufferWrites ?? (CACHED_NODE_ENV !== 'test');
     return {
       codec: this.codec,
       showTimestamp: this.showTimestamp,
       showLevel: this.showLevel,
       debugMode: this.debugMode,
       timeFormat: this.timeFormat,
+      bufferWrites: resolvedBufferWrites,
+      asyncStacks: this.asyncStacks,
       colors: { ...this.colors },
     };
   }

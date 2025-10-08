@@ -44,6 +44,16 @@ spec.configure({
     debug: '#cc66ff',
   }
 });
+
+// Create scoped child loggers
+const api = spec.child('api');
+const db = spec.child('db');
+
+api.info('server started');     // => [api] server started
+db.warn('slow query');          // => [db] slow query
+
+// You can still configure globally; children see updates
+spec.configure({ bufferWrites: false });
 ```
 
 ## Errors
@@ -56,8 +66,9 @@ try {
 } catch (e) {
   spec.error(e);
 }
-```
 
+
+```
 ## Plugins (Node)
 
 - `FileLogger` (writes to a rotating file)
@@ -68,4 +79,18 @@ import spec, { FileLoggerPlugin, PerformanceTrackerPlugin } from 'spectrallogs';
 
 spec.use(new FileLoggerPlugin({ filePath: '.spectral/logs.txt' }));
 spec.use(new PerformanceTrackerPlugin());
+```
+
+## Child Loggers (scopes)
+
+Create scoped child loggers that prefix messages with a label. Children inherit config and plugins from the parent.
+
+```ts
+import spec from 'spectrallogs';
+
+const api = spec.child('api');
+const db = spec.child('db');
+
+api.info('server started');     // => [api] server started
+db.warn('slow query');          // => [db] slow query
 ```

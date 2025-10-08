@@ -17,15 +17,17 @@ class SpectralLogger {
     formatter;
     errorHandler;
     plugins = [];
+    scope;
     /**
      * Create a new Spectral logger instance using the global configuration
      * (`SpectralConfig.getInstance()`).
      */
-    constructor() {
+    constructor(scope) {
         this.config = SpectralConfig_1.SpectralConfig.getInstance();
-        this.output = new SpectralOutput_1.SpectralOutput();
+        this.output = new SpectralOutput_1.SpectralOutput(this.config);
         this.formatter = new SpectralFormatter_1.SpectralFormatter(this.config);
         this.errorHandler = new SpectralError_1.SpectralError(this.formatter);
+        this.scope = scope;
     }
     /**
      * Update runtime configuration (colors, timestamp/level visibility, debug mode, etc.).
@@ -78,9 +80,19 @@ class SpectralLogger {
             codec: codec ?? this.config.codec,
         };
         messageStr = this.executePlugins(messageStr, level, options, 'before');
-        const formatted = this.formatter.format(messageStr, level, options);
+        // Prepend scope if present
+        const scopedMessage = this.scope ? `[${this.scope}] ${messageStr}` : messageStr;
+        const formatted = this.formatter.format(scopedMessage, level, options);
         this.output.write(formatted, level, options.codec);
         this.executePlugins(messageStr, level, options, 'after');
+    }
+    /** Create a child logger that prefixes messages with a scope label and inherits config/plugins. */
+    child(scope) {
+        const child = new SpectralLogger(scope);
+        // Inherit plugins (shallow copy reference is fine; plugins are usually stateless or singletons)
+        for (const p of this.plugins)
+            child.use(p);
+        return child;
     }
     /** Log a general message. */
     log(message, color, codec) {

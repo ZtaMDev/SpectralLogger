@@ -1,6 +1,6 @@
 {
   "name": "spectrallogs",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "The fastest, most elegant logging library for Node.js and TypeScript",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -28,7 +28,7 @@
   "scripts": {
     "build": "npx tsc",
     "build:web": "npx tsc -p tsconfig.web.json",
-    "build:all": "npm run build && npm run build:web",
+    "build:all": "npm run build && npm run build:web && npm run docs:build",
     "dev": "npx tsc --watch",
     "docs:dev": "vitepress dev docs",
     "docs:build": "vitepress build docs",

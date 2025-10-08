@@ -65,3 +65,20 @@ try {
 - Enable batching (default) to reduce console call overhead.
 - Use a DOM sink (`sink` option) for extremely high volumes.
 - Avoid logging huge objects repeatedly; prefer summaries or counts.
+
+## Child Loggers (scopes)
+
+You can create scoped child loggers that prefix messages with a label and inherit plugins:
+
+```ts
+import spec from 'spectrallogs/web';
+
+const ui = spec.child('ui');
+const auth = spec.child('auth');
+
+ui.info('mounted');     // => [ui] mounted
+auth.warn('expiring');  // => [auth] expiring
+```
+
+Notes:
+- `asyncStacks` is Node-only and has no effect in the web build.

@@ -1,9 +1,19 @@
 import { LogLevel } from '../types';
+import { SpectralConfig } from './SpectralConfig';
+
+// Cache environment flags once at module load to avoid per-log lookups
+const CACHED_NODE_ENV = process.env.NODE_ENV;
+const IS_TEST_ENV = CACHED_NODE_ENV === 'test';
 
 export class SpectralOutput {
   private buffer: string[] = [];
   private bufferSize: number = 10;
   private flushTimer: NodeJS.Timeout | null = null;
+  private config: SpectralConfig;
+
+  constructor(config: SpectralConfig) {
+    this.config = config;
+  }
 
   public write(message: string, level: LogLevel, codec: BufferEncoding = 'utf-8'): void {
     const stream = level === 'error' || level === 'warn' ? process.stderr : process.stdout;
@@ -23,7 +33,9 @@ export class SpectralOutput {
   }
 
   private shouldBuffer(): boolean {
-    return process.env.NODE_ENV !== 'test';
+    // Prefer explicit config; fallback to env-based default
+    const resolved = this.config.getConfig().bufferWrites;
+    return resolved;
   }
 
   private scheduleFlush(stream: NodeJS.WriteStream, codec: BufferEncoding): void {

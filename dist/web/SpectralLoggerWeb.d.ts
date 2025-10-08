@@ -13,11 +13,12 @@ export declare class SpectralLoggerWeb {
     private formatter;
     private errorHandler;
     private plugins;
+    private scope?;
     /**
      * Create a web logger.
      * @param outputOptions Configure batching and/or a custom sink (e.g., DOM appender)
      */
-    constructor(outputOptions?: ConstructorParameters<typeof WebOutput>[0]);
+    constructor(outputOptions?: ConstructorParameters<typeof WebOutput>[0], scope?: string);
     /**
      * Update runtime configuration (colors, timestamp/level visibility, debug mode, etc.).
      * @param options Partial configuration to merge with current settings
@@ -30,6 +31,8 @@ export declare class SpectralLoggerWeb {
     use(plugin: PluginWeb): void;
     private executePlugins;
     private writeLog;
+    /** Create a child logger that prefixes messages with a scope and inherits config/plugins/output. */
+    child(scope: string): SpectralLoggerWeb;
     /** Log a general message. */
     log(message: any, color?: string): void;
     /** Log an informational message. */

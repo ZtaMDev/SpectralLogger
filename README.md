@@ -64,6 +64,7 @@ spec.configure({
   showTimestamp: true,
   showLevel: true,
   debugMode: false,
+  bufferWrites: true, // enable/disable stdout buffering in Node (default true outside tests)
   codec: 'utf-8',
   timeFormat: 'iso', // 'iso' | 'unix' | 'locale'
   colors: {
@@ -193,6 +194,9 @@ npx spec bench
 
 # Diagnose environment
 npx spec doctor
+
+# Open docs in default browser
+npx spec docs
 ```
 
 ## Error Handling
@@ -222,6 +226,16 @@ npx spec bench
 
 Typical results show Spectral is comparable or faster than `console.log` while providing significantly more features.
 
+In CI, a GitHub Actions workflow runs benchmarks and posts a summary (see `.github/workflows/benchmark.yml`).
+
+Example output:
+
+```
+console.log: 800ms (12500 logs/sec)
+Spectral:    284ms (35200 logs/sec)
+Spectral is 64% faster! 🚀
+```
+
 ## API Reference
 
 ### Main Logger Methods
@@ -241,6 +255,20 @@ Typical results show Spectral is comparable or faster than `console.log` while p
 - `spec.getConfig()` - Get current configuration
 - `spec.getErrorStats()` - Get error statistics
 - `spec.clearErrorCache()` - Clear error cache
+
+### Child Loggers (scopes)
+
+Create scoped child loggers that prefix messages, inheriting config and plugins:
+
+```ts
+import spec from 'spectrallogs';
+
+const api = spec.child('api');
+const db = spec.child('db');
+
+api.info('server started'); // => [api] server started
+db.warn('slow query');      // => [db] slow query
+```
 
 ## Examples
 

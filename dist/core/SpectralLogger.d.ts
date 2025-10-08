@@ -11,11 +11,12 @@ export declare class SpectralLogger {
     private formatter;
     private errorHandler;
     private plugins;
+    private scope?;
     /**
      * Create a new Spectral logger instance using the global configuration
      * (`SpectralConfig.getInstance()`).
      */
-    constructor();
+    constructor(scope?: string);
     /**
      * Update runtime configuration (colors, timestamp/level visibility, debug mode, etc.).
      * @param options Partial configuration to merge with current settings
@@ -28,6 +29,8 @@ export declare class SpectralLogger {
     use(plugin: Plugin): void;
     private executePlugins;
     private writeLog;
+    /** Create a child logger that prefixes messages with a scope label and inherits config/plugins. */
+    child(scope: string): SpectralLogger;
     /** Log a general message. */
     log(message: any, color?: string, codec?: BufferEncoding): void;
     /** Log an informational message. */
