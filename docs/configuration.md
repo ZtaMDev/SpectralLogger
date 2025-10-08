@@ -75,14 +75,3 @@ Inspect and clear internal error cache:
 const stats = spec.getErrorStats();
 spec.clearErrorCache();
 ```
-
-## CDN version pinning
-
-Use pinned versions for reproducible builds:
-
-```html
-<script type="module">
-  import spec from 'https://esm.sh/spectrallogs@1.0.4/web';
-  spec.info('Pinned version');
-</script>
-```
