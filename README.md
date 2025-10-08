@@ -4,6 +4,9 @@
 
 Spectral is a high-performance, zero-dependency logging library designed to replace `console.log` with beautiful colors, advanced formatting, and incredible speed.
 
+Official [Website](https://ztamdev.github.io/SpectralLogs)
+Documentation [Docs](https://ztamdev.github.io/SpectralLogs/getting-started.html)
+
 ## Features
 
 - **Lightning Fast** - Optimized stdout writing with internal buffering

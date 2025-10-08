@@ -44,6 +44,40 @@ function showVersion() {
     const packageJson = JSON.parse(fs.readFileSync(path.join(__dirname, '../../package.json'), 'utf-8'));
     spec.info(`Spectral v${packageJson.version}`);
 }
+function openDocs() {
+    const url = 'https://ztamdev.github.io/SpectralLogs/getting-started.html';
+    try {
+        const { spawn } = require('child_process');
+        const isWin = process.platform === 'win32';
+        const isMac = process.platform === 'darwin';
+        let cmd = '';
+        let args = [];
+        if (isWin) {
+            cmd = 'cmd';
+            args = ['/c', 'start', '""', url];
+        }
+        else if (isMac) {
+            cmd = 'open';
+            args = [url];
+        }
+        else {
+            cmd = 'xdg-open';
+            args = [url];
+        }
+        const child = spawn(cmd, args, { stdio: 'ignore', detached: true });
+        child.on('error', (err) => {
+            spec.error(`Failed to open browser: ${err?.message || err}`);
+            spec.info(`Open manually: ${url}`);
+        });
+        child.unref();
+        spec.success('Opening SpectralLogs documentation...');
+        spec.info(url);
+    }
+    catch (e) {
+        spec.error('Could not open the documentation automatically.');
+        spec.info(`Open manually: ${url}`);
+    }
+}
 function showHelp() {
     console.log(`
 Spectral CLI - The fastest logging library for Node.js
@@ -59,6 +93,7 @@ Commands:
   config reset        Reset to default configuration
   bench               Run performance benchmark
   doctor              Diagnose environment and color support
+  docs                Open SpectralLogs docs in your default browser
 
 Examples:
   spec --version
@@ -188,6 +223,9 @@ switch (command) {
         break;
     case 'doctor':
         runDoctor();
+        break;
+    case 'docs':
+        openDocs();
         break;
     default:
         if (command) {
