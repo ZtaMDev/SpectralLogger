@@ -2,7 +2,7 @@
 # VitePress home page configuration
 layout: home
 hero:
-  name: SpectralLogs
+  name: Spectral Logs
   text: High-performance logging for Node & Web
   tagline: Beautiful colors, clean formatting, blazing-fast output, and an extensible plugin system.
   image:

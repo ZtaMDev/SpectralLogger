@@ -2,7 +2,7 @@
 import { defineConfig } from 'vitepress';
 
 export default defineConfig({
-  title: 'SpectralLogs',
+  title: 'Spectral Logs',
   base: '/SpectralLogs/',
   description: 'High-performance logging for Node & Web',
   sitemap: { hostname: 'https://ztamdev.github.io/SpectralLogs' },
