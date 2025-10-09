@@ -8,8 +8,9 @@
 
 Spectral is a high-performance, zero-dependency logging library designed to replace `console.log` with beautiful colors, advanced formatting, and incredible speed.
 
-Official [Website](https://ztamdev.github.io/SpectralLogs)
-Documentation [Docs](https://ztamdev.github.io/SpectralLogs/getting-started.html)
+Official [Website](https://ztamdev.github.io/SpectralLogs) | 
+Documentation [Docs](https://ztamdev.github.io/SpectralLogs/getting-started.html) | 
+[Roadmap](https://ztamdev.github.io/SpectralLogs/roadmap.html)
 
 </div>
 
@@ -23,6 +24,18 @@ Documentation [Docs](https://ztamdev.github.io/SpectralLogs/getting-started.html
 - **Plugin System** - Extensible architecture for custom functionality
 - **Zero Dependencies** - Minimal footprint, maximum performance
 - **CLI Tools** - Built-in diagnostics, benchmarking, and configuration management
+
+## What's Coming Next?
+
+SpectralLogs is actively developed with exciting features on the horizon! Check out our [interactive roadmap](https://ztamdev.github.io/SpectralLogs/roadmap.html) to see what's planned:
+
+- **v0.2.0**: Performance improvements and stability enhancements
+- **v0.3.0**: Advanced logging features (structured logging, filtering, tracing)
+- **v0.4.0**: Rich plugin ecosystem and analytics
+- **v0.5.0**: Enhanced developer experience with advanced tooling
+- **v1.0.0**: Production-ready with enterprise features
+
+[View Full Roadmap →](https://ztamdev.github.io/SpectralLogs/roadmap.html)
 
 ## Installation
 
@@ -306,7 +319,7 @@ Example output:
 ```
 console.log: 800ms (12500 logs/sec)
 Spectral:    284ms (35200 logs/sec)
-Spectral is 64% faster! 🚀
+Spectral is 64% faster!
 ```
 
 ## API Reference

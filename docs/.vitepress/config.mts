@@ -7,6 +7,13 @@ export default defineConfig({
   description: 'High-performance logging for Node & Web',
   sitemap: { hostname: 'https://ztamdev.github.io/SpectralLogs' },
   head: [
+    ['script', {}, `
+      (function() {
+        document.documentElement.classList.add('dark');
+        document.documentElement.classList.remove('light');
+        document.documentElement.style.colorScheme = 'dark';
+      })();
+    `],
     ['link', { rel: 'icon', href: '/SpectralLogs/favicon.ico' }],
     ['link', { rel: 'shortcut icon', href: '/SpectralLogs/favicon.ico' }],
     ['link', { rel: 'apple-touch-icon', href: '/SpectralLogs/logo.png' }],
@@ -24,9 +31,11 @@ export default defineConfig({
     ['meta', { name: 'twitter:description', content: 'Fast logging for Node & Web with colors, formatting, plugins.' }],
     ['meta', { name: 'twitter:image', content: 'https://ztamdev.github.io/SpectralLogs/logo.png' }]
   ],
+  appearance: false,
   themeConfig: {
     logo: '/logo.png',
     nav: [
+      { text: 'Roadmap', link: '/roadmap' },
       { text: 'Getting Started', link: '/getting-started' },
       { text: 'Configuration', link: '/configuration' },
       { text: 'Colors', link: '/colors' },
@@ -51,6 +60,12 @@ export default defineConfig({
           { text: 'How it works', link: '/how-it-works' },
         ],
       },
+      {
+        text: 'Project',
+        items: [
+          { text: 'Roadmap', link: '/roadmap' },
+        ]
+      }
     ],
     footer: {
       message:

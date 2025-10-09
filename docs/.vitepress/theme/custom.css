@@ -1,43 +1,110 @@
-/* SpectralLogs docs theme customizations */
-
-/* Prefer VitePress CSS variables for hero sizing */
+/* Forzar tema oscuro siempre y desde el inicio */
 :root {
-  --vp-home-hero-image-width: 640px;
-  --vp-home-hero-image-height: 640px;
+  color-scheme: dark !important;
 }
 
-/* Ensure object-fit for crisp rendering */
-.VPHero .image img { object-fit: contain; }
-
-/* Small screens */
-@media (max-width: 560px) {
-  :root {
-    --vp-home-hero-image-width: 320px;
-    --vp-home-hero-image-height: 320px;
-  }
+html {
+  color-scheme: dark !important;
 }
 
-/* Botón GitHub */
-.VPHomeHero .action a[href*="github"]::before {
-  content: '';
-  display: inline-block;
+html.dark,
+html:not(.light) {
+  color-scheme: dark !important;
+}
+
+/* Forzar variables de tema oscuro */
+:root {
+  --vp-c-bg: #1a1a1a !important;
+  --vp-c-bg-alt: #262626 !important;
+  --vp-c-bg-elv: #202020 !important;
+  --vp-c-bg-soft: #262626 !important;
+}
+
+/* Ocultar completamente el toggle del tema */
+.VPSwitchAppearance {
+  display: none !important;
+}
+
+/* Asegurar que el body tenga el fondo oscuro desde el inicio */
+body {
+  background-color: #1a1a1a !important;
+  color: rgba(255, 255, 255, 0.87) !important;
+}
+
+/* Asegurar que el header de VitePress esté siempre por encima */
+.VPNav {
+  z-index: 100 !important;
+}
+
+.VPNavBar {
+  z-index: 100 !important;
+}
+
+/* Asegurar que el sidebar también esté por encima */
+.VPSidebar {
+  z-index: 90 !important;
+}
+
+/* Header con tema oscuro siempre */
+.VPNav .VPNavBar {
+  backdrop-filter: blur(8px);
+  background: rgba(26, 26, 26, 0.95) !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Asegurar que los elementos del roadmap no interfieran */
+.roadmap-hero {
+  position: relative;
+  z-index: 1;
+}
+
+/* Mejorar el contraste en el roadmap para tema oscuro */
+.roadmap-hero {
+  background: linear-gradient(135deg, #4c1d95 0%, #581c87 50%, #7c2d12 100%) !important;
+}
+
+/* Ajustar colores de texto para mejor contraste */
+.roadmap-hero h1,
+.roadmap-hero p {
+  color: white !important;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+/* Estilos para botones con iconos en la página principal */
+.VPHero .VPButton {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 0.5rem !important;
+}
+
+/* Iconos específicos para cada botón usando los archivos en /public */
+.VPHero .VPButton[href="/roadmap"]::before {
+  content: "";
   width: 18px;
   height: 18px;
-  margin-right: 6px;
-  vertical-align: middle;
-  background: url('https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/github.svg') no-repeat center;
+  background-image: url('/SpectralLogs/icons/roadmap.svg');
   background-size: contain;
-  filter: invert(1); /* para hacerlo blanco si el tema es oscuro */
+  background-repeat: no-repeat;
+  background-position: center;
+  filter: brightness(0) invert(1);
 }
 
-/* npm — logo rojo oficial compacto */
-.VPHomeHero .action a[href*="npmjs"]::before {
-  content: '';
-  display: inline-block;
-  width: 22px;
-  height: 22px;
-  margin-right: 6px;
-  vertical-align: middle;
-  background: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path fill='%23CB3837' d='M0 0v24h24V0H0zm20 20h-4v-8h-4v8H4V4h16v16z'/></svg>") no-repeat center;
+.VPHero .VPButton[href*="github.com"]::before {
+  content: "";
+  width: 18px;
+  height: 18px;
+  background-image: url('/SpectralLogs/github-color.svg');
   background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+.VPHero .VPButton[href*="npmjs.com"]::before {
+  content: "";
+  width: 18px;
+  height: 18px;
+  background-image: url('/SpectralLogs/npm-icon.svg');
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
 }
