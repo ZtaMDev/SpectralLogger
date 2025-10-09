@@ -6,7 +6,7 @@ interface RGB {
   b: number;
 }
 
-const COLOR_NAMES: Record<string, string> = {
+const DEFAULT_COLOR_NAMES: Record<string, string> = {
   black: '#000000',
   red: '#ff0000',
   green: '#00ff00',
@@ -27,6 +27,23 @@ const COLOR_NAMES: Record<string, string> = {
   olive: '#808000',
   maroon: '#800000',
 };
+
+// Mutable registry that starts with defaults and can be extended at runtime
+const COLOR_REGISTRY: Record<string, string> = { ...DEFAULT_COLOR_NAMES };
+
+/** Add or override a named color in the registry. */
+export function addCustomColor(name: string, color: string): void {
+  if (!name || !color) return;
+  COLOR_REGISTRY[name.toLowerCase()] = color;
+  // Invalidate cache for this color key and the resolved hex
+  colorCache.delete(name);
+  colorCache.delete(color);
+}
+
+/** Check if a color name exists in the registry. */
+export function hasColor(name: string): boolean {
+  return !!COLOR_REGISTRY[name.toLowerCase()];
+}
 
 let supportsTrueColor: boolean | null = null;
 
@@ -111,7 +128,7 @@ export function parseColor(color: ColorInput): string {
   } else if (color.startsWith('rgb(')) {
     rgb = parseRgbString(color);
   } else {
-    const namedColor = COLOR_NAMES[color.toLowerCase()];
+    const namedColor = COLOR_REGISTRY[color.toLowerCase()];
     if (namedColor) {
       rgb = hexToRgb(namedColor);
     }

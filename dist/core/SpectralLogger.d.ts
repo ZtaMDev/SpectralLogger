@@ -13,6 +13,14 @@ export declare class SpectralLogger {
     private plugins;
     private scope?;
     /**
+     * Inline color helper usable in template strings.
+     * Example: `spec.log(`${this.color('Title', 'warn')} details`)`
+     * Also exposes `spec.color.add(name, color)` to register custom colors.
+     */
+    readonly color: ((text: string, colorNameOrCode: string) => string) & {
+        add: (name: string, color: string) => void;
+    };
+    /**
      * Create a new Spectral logger instance using the global configuration
      * (`SpectralConfig.getInstance()`).
      */

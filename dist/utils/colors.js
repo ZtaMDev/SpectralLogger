@@ -1,6 +1,8 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.RESET = void 0;
+exports.addCustomColor = addCustomColor;
+exports.hasColor = hasColor;
 exports.detectColorSupport = detectColorSupport;
 exports.hexToRgb = hexToRgb;
 exports.parseRgbString = parseRgbString;
@@ -8,7 +10,7 @@ exports.rgbToAnsi = rgbToAnsi;
 exports.rgbToAnsi256 = rgbToAnsi256;
 exports.parseColor = parseColor;
 exports.colorize = colorize;
-const COLOR_NAMES = {
+const DEFAULT_COLOR_NAMES = {
     black: '#000000',
     red: '#ff0000',
     green: '#00ff00',
@@ -29,6 +31,21 @@ const COLOR_NAMES = {
     olive: '#808000',
     maroon: '#800000',
 };
+// Mutable registry that starts with defaults and can be extended at runtime
+const COLOR_REGISTRY = { ...DEFAULT_COLOR_NAMES };
+/** Add or override a named color in the registry. */
+function addCustomColor(name, color) {
+    if (!name || !color)
+        return;
+    COLOR_REGISTRY[name.toLowerCase()] = color;
+    // Invalidate cache for this color key and the resolved hex
+    colorCache.delete(name);
+    colorCache.delete(color);
+}
+/** Check if a color name exists in the registry. */
+function hasColor(name) {
+    return !!COLOR_REGISTRY[name.toLowerCase()];
+}
 let supportsTrueColor = null;
 function detectColorSupport() {
     if (supportsTrueColor !== null)
@@ -98,7 +115,7 @@ function parseColor(color) {
         rgb = parseRgbString(color);
     }
     else {
-        const namedColor = COLOR_NAMES[color.toLowerCase()];
+        const namedColor = COLOR_REGISTRY[color.toLowerCase()];
         if (namedColor) {
             rgb = hexToRgb(namedColor);
         }

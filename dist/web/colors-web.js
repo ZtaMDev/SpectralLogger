@@ -1,13 +1,44 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.addCustomColorWeb = addCustomColorWeb;
 exports.toCssColor = toCssColor;
 exports.styleFor = styleFor;
+// Default color names (CSS keywords or hex). Can be extended at runtime.
+const DEFAULT_COLORS = {
+    black: '#000000',
+    red: '#ff0000',
+    green: '#00ff00',
+    yellow: '#ffff00',
+    blue: '#0000ff',
+    magenta: '#ff00ff',
+    cyan: '#00ffff',
+    white: '#ffffff',
+    gray: '#808080',
+    grey: '#808080',
+    orange: '#ffa500',
+    purple: '#800080',
+    pink: '#ffc0cb',
+    brown: '#a52a2a',
+    lime: '#00ff00',
+    navy: '#000080',
+    teal: '#008080',
+    olive: '#808000',
+    maroon: '#800000',
+};
+const COLOR_REGISTRY = { ...DEFAULT_COLORS };
+function addCustomColorWeb(name, color) {
+    if (!name || !color)
+        return;
+    COLOR_REGISTRY[name.toLowerCase()] = color;
+}
 // Convierte ColorInput a una propiedad CSS válida para console %c
 function toCssColor(color) {
     if (!color)
         return undefined;
-    // Acepta #hex, rgb(...), o nombres CSS
-    return color;
+    if (color.startsWith('#') || color.startsWith('rgb('))
+        return color;
+    const named = COLOR_REGISTRY[color.toLowerCase()];
+    return named || color; // fallback to provided token
 }
 function styleFor(color) {
     const cssColor = toCssColor(color);

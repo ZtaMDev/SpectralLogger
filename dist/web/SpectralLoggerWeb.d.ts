@@ -15,6 +15,14 @@ export declare class SpectralLoggerWeb {
     private plugins;
     private scope?;
     /**
+     * Inline color helper usable in template strings. Returns a marker that the formatter
+     * will transform into a separate `%c` segment so only that span is colored.
+     * Example: `${spec.color('Title', 'accent')} details`.
+     */
+    readonly color: ((text: string, colorNameOrCode: string) => string) & {
+        add: (name: string, color: string) => void;
+    };
+    /**
      * Create a web logger.
      * @param outputOptions Configure batching and/or a custom sink (e.g., DOM appender)
      */

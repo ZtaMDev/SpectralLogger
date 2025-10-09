@@ -1,6 +1,6 @@
 import { LogLevel, LogOptions } from '../types';
 import { SpectralConfig } from './SpectralConfig';
-import { colorize } from '../utils/colors';
+import { colorize, RESET, parseColor } from '../utils/colors';
 import { getShortTimestamp } from '../utils/time';
 
 /**
@@ -44,8 +44,14 @@ export class SpectralFormatter {
     }
 
     const messageColor = options?.color ?? this.getLevelColor(level);
-    const coloredMessage = colorize(message, messageColor);
-    parts.push(coloredMessage);
+    // Compute outer ANSI and make inline RESETs re-apply outer color to avoid losing it
+    const outerAnsi = parseColor(messageColor);
+    if (outerAnsi) {
+      const preserved = `${outerAnsi}${message.replaceAll(RESET, RESET + outerAnsi)}${RESET}`;
+      parts.push(preserved);
+    } else {
+      parts.push(message);
+    }
 
     return parts.join(' ');
   }

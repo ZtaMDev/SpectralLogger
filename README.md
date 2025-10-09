@@ -85,6 +85,51 @@ spec.configure({
 });
 ```
 
+## Colors
+
+Spectral lets you color inline segments and register custom color names.
+
+### Inline color helper
+
+- Node and Web expose `spec.color(text, nameOrColor)` for template strings.
+- You can also register custom names via `spec.color.add(name, color)`.
+
+```ts
+// Node
+import spec from 'spectrallogs';
+
+// Register custom colors
+spec.color.add('accent', '#7c3aed'); // purple-600
+spec.color.add('muted',  '#9ca3af'); // gray-400
+
+// Built-in names also work: 'info' | 'success' | 'warn' | 'error' | 'log' | 'debug'
+spec.info(`${spec.color('Accent Title', 'accent')} - details with ${spec.color('muted text', 'muted')}`);
+
+// Any CSS-like color is accepted: #hex, rgb(...), or named (orange, teal, ...)
+spec.log(`${spec.color('Only this label is blue:', 'rgb(0,191,255)')} rest uses log color`);
+```
+
+```ts
+// Web (ESM)
+import spec from 'spectrallogs/web';
+
+spec.color.add('accent', '#7c3aed');
+spec.color.add('muted',  '#9ca3af');
+
+// Inline segments render as separate %c parts; unmarked text uses the default message color
+spec.info(`${spec.color('Accent Title', 'accent')} - details with ${spec.color('muted text', 'muted')}`);
+
+// Per-call color sets the default message color for unmarked text
+spec.info(`Default cyan, but ${spec.color('accent span', 'accent')} here`, '#22d3ee');
+
+// Configure level colors globally
+spec.configure({ colors: { info: '#22d3ee' } });
+```
+
+Notes:
+- Node preserves the outer message color across inline segments.
+- Web splits the message into `%c` segments so only marked spans change color; the rest uses the message/default level color.
+
 ## Plugins
 
 Spectral includes a powerful plugin system for extending functionality.

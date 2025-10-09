@@ -3,6 +3,7 @@ import { SpectralConfig } from './SpectralConfig';
 import { SpectralOutput } from './SpectralOutput';
 import { SpectralFormatter } from './SpectralFormatter';
 import { SpectralError } from './SpectralError';
+import { colorize, addCustomColor } from '../utils/colors';
 
 /**
  * High-performance logger for Node.js environments.
@@ -19,6 +20,15 @@ export class SpectralLogger {
   private scope?: string;
 
   /**
+   * Inline color helper usable in template strings.
+   * Example: `spec.log(`${this.color('Title', 'warn')} details`)`
+   * Also exposes `spec.color.add(name, color)` to register custom colors.
+   */
+  public readonly color: ((text: string, colorNameOrCode: string) => string) & {
+    add: (name: string, color: string) => void;
+  };
+
+  /**
    * Create a new Spectral logger instance using the global configuration
    * (`SpectralConfig.getInstance()`).
    */
@@ -28,6 +38,16 @@ export class SpectralLogger {
     this.formatter = new SpectralFormatter(this.config);
     this.errorHandler = new SpectralError(this.formatter);
     this.scope = scope;
+
+    // Bind color helper
+    const colorFn = (text: string, colorNameOrCode: string) => {
+      const cfg = this.config.getConfig();
+      const levelMap = cfg.colors as Record<string, string>;
+      const resolved = levelMap[colorNameOrCode] || colorNameOrCode;
+      return colorize(text, resolved);
+    };
+    (colorFn as any).add = (name: string, color: string) => addCustomColor(name, color);
+    this.color = colorFn as any;
   }
 
   /**

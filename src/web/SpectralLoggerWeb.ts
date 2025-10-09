@@ -2,6 +2,7 @@ import type { LogLevel, LogOptionsWeb, SpectralConfigOptionsWeb, PluginWeb } fro
 import { WebFormatter } from './WebFormatter.js';
 import { WebOutput } from './WebOutput.js';
 import { WebErrorHandler } from './WebError.js';
+import { addCustomColorWeb } from './colors-web.js';
 
 /**
  * High-performance, browser-friendly logger.
@@ -33,6 +34,15 @@ export class SpectralLoggerWeb {
   private scope?: string;
 
   /**
+   * Inline color helper usable in template strings. Returns a marker that the formatter
+   * will transform into a separate `%c` segment so only that span is colored.
+   * Example: `${spec.color('Title', 'accent')} details`.
+   */
+  public readonly color: ((text: string, colorNameOrCode: string) => string) & {
+    add: (name: string, color: string) => void;
+  };
+
+  /**
    * Create a web logger.
    * @param outputOptions Configure batching and/or a custom sink (e.g., DOM appender)
    */
@@ -45,6 +55,15 @@ export class SpectralLoggerWeb {
     });
     this.errorHandler = new WebErrorHandler(this.formatter);
     this.scope = scope;
+
+    const colorFn = (text: string, colorNameOrCode: string) => {
+      const levelMap = this.config.colors as Record<string, string>;
+      const resolved = levelMap[colorNameOrCode] || colorNameOrCode;
+      // wrap with markers consumed by WebFormatter
+      return `<<c:${resolved}>>${text}<</c>>`;
+    };
+    (colorFn as any).add = (name: string, color: string) => addCustomColorWeb(name, color);
+    this.color = colorFn as any;
   }
 
   /**

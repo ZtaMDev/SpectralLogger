@@ -34,8 +34,15 @@ class SpectralFormatter {
             parts.push((0, colors_1.colorize)(`[${levelText}]`, levelColor));
         }
         const messageColor = options?.color ?? this.getLevelColor(level);
-        const coloredMessage = (0, colors_1.colorize)(message, messageColor);
-        parts.push(coloredMessage);
+        // Compute outer ANSI and make inline RESETs re-apply outer color to avoid losing it
+        const outerAnsi = (0, colors_1.parseColor)(messageColor);
+        if (outerAnsi) {
+            const preserved = `${outerAnsi}${message.replaceAll(colors_1.RESET, colors_1.RESET + outerAnsi)}${colors_1.RESET}`;
+            parts.push(preserved);
+        }
+        else {
+            parts.push(message);
+        }
         return parts.join(' ');
     }
     /**

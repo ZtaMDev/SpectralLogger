@@ -43,8 +43,31 @@ export class WebFormatter {
     }
 
     const msgColor = options?.color ?? this.getLevelColor(level);
-    parts.push('%c' + message);
-    styles.push(styleFor(msgColor));
+    // Parse inline markers: <<c:COLOR>>text<</c>> to segmented %c parts
+    const segments: Array<{ text: string; color?: string }> = [];
+    const regex = /<<c:([^>]+)>>([\s\S]*?)<<\/c>>/g;
+    let lastIndex = 0;
+    let match: RegExpExecArray | null;
+    while ((match = regex.exec(message)) !== null) {
+      if (match.index > lastIndex) {
+        segments.push({ text: message.slice(lastIndex, match.index) });
+      }
+      segments.push({ text: match[2], color: match[1] });
+      lastIndex = regex.lastIndex;
+    }
+    if (lastIndex < message.length) {
+      segments.push({ text: message.slice(lastIndex) });
+    }
+
+    if (segments.length === 0) {
+      parts.push('%c' + message);
+      styles.push(styleFor(msgColor));
+    } else {
+      for (const seg of segments) {
+        parts.push('%c' + seg.text);
+        styles.push(styleFor(seg.color ?? msgColor));
+      }
+    }
 
     return { args: [parts.join(' '), ...styles] };
   }

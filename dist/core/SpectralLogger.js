@@ -5,6 +5,7 @@ const SpectralConfig_1 = require("./SpectralConfig");
 const SpectralOutput_1 = require("./SpectralOutput");
 const SpectralFormatter_1 = require("./SpectralFormatter");
 const SpectralError_1 = require("./SpectralError");
+const colors_1 = require("../utils/colors");
 /**
  * High-performance logger for Node.js environments.
  *
@@ -19,6 +20,12 @@ class SpectralLogger {
     plugins = [];
     scope;
     /**
+     * Inline color helper usable in template strings.
+     * Example: `spec.log(`${this.color('Title', 'warn')} details`)`
+     * Also exposes `spec.color.add(name, color)` to register custom colors.
+     */
+    color;
+    /**
      * Create a new Spectral logger instance using the global configuration
      * (`SpectralConfig.getInstance()`).
      */
@@ -28,6 +35,15 @@ class SpectralLogger {
         this.formatter = new SpectralFormatter_1.SpectralFormatter(this.config);
         this.errorHandler = new SpectralError_1.SpectralError(this.formatter);
         this.scope = scope;
+        // Bind color helper
+        const colorFn = (text, colorNameOrCode) => {
+            const cfg = this.config.getConfig();
+            const levelMap = cfg.colors;
+            const resolved = levelMap[colorNameOrCode] || colorNameOrCode;
+            return (0, colors_1.colorize)(text, resolved);
+        };
+        colorFn.add = (name, color) => (0, colors_1.addCustomColor)(name, color);
+        this.color = colorFn;
     }
     /**
      * Update runtime configuration (colors, timestamp/level visibility, debug mode, etc.).

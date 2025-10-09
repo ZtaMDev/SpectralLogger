@@ -4,6 +4,7 @@ exports.SpectralLoggerWeb = void 0;
 const WebFormatter_js_1 = require("./WebFormatter.js");
 const WebOutput_js_1 = require("./WebOutput.js");
 const WebError_js_1 = require("./WebError.js");
+const colors_web_js_1 = require("./colors-web.js");
 /**
  * High-performance, browser-friendly logger.
  *
@@ -32,6 +33,12 @@ class SpectralLoggerWeb {
     plugins = [];
     scope;
     /**
+     * Inline color helper usable in template strings. Returns a marker that the formatter
+     * will transform into a separate `%c` segment so only that span is colored.
+     * Example: `${spec.color('Title', 'accent')} details`.
+     */
+    color;
+    /**
      * Create a web logger.
      * @param outputOptions Configure batching and/or a custom sink (e.g., DOM appender)
      */
@@ -44,6 +51,14 @@ class SpectralLoggerWeb {
         });
         this.errorHandler = new WebError_js_1.WebErrorHandler(this.formatter);
         this.scope = scope;
+        const colorFn = (text, colorNameOrCode) => {
+            const levelMap = this.config.colors;
+            const resolved = levelMap[colorNameOrCode] || colorNameOrCode;
+            // wrap with markers consumed by WebFormatter
+            return `<<c:${resolved}>>${text}<</c>>`;
+        };
+        colorFn.add = (name, color) => (0, colors_web_js_1.addCustomColorWeb)(name, color);
+        this.color = colorFn;
     }
     /**
      * Update runtime configuration (colors, timestamp/level visibility, debug mode, etc.).

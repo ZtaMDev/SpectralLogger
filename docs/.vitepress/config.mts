@@ -29,11 +29,12 @@ export default defineConfig({
     nav: [
       { text: 'Getting Started', link: '/getting-started' },
       { text: 'Configuration', link: '/configuration' },
-      { text: 'How it works', link: '/how-it-works' },
+      { text: 'Colors', link: '/colors' },
       { text: 'Node', link: '/node' },
       { text: 'Web', link: '/web' },
       { text: 'Plugins', link: '/plugins' },
       { text: 'API', link: '/api' },
+      { text: 'How it works', link: '/how-it-works' },
     ],
     sidebar: [
       {
@@ -41,12 +42,13 @@ export default defineConfig({
         items: [
           { text: 'Getting Started', link: '/getting-started' },
           { text: 'Configuration', link: '/configuration' },
-          { text: 'How it works', link: '/how-it-works' },
-          { text: 'Workers + Test Runners', link: '/workers-and-test-runners' },
           { text: 'Node', link: '/node' },
           { text: 'Web', link: '/web' },
+          { text: 'Colors', link: '/colors' },
           { text: 'Plugins', link: '/plugins' },
+          { text: 'Workers', link: '/workers-and-test-runners' },
           { text: 'API', link: '/api' },
+          { text: 'How it works', link: '/how-it-works' },
         ],
       },
     ],
