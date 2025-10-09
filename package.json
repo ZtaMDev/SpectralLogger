@@ -1,6 +1,6 @@
 {
   "name": "spectrallogs",
-  "version": "0.1.6",
+  "version": "0.1.7",
   "description": "The fastest, most elegant logging library for Node.js and TypeScript",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",

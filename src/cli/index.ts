@@ -7,7 +7,12 @@ import * as path from 'path';
 
 const spec = new SpectralLogger();
 const args = process.argv.slice(2);
-
+spec.configure({
+  debugMode: true,
+  showTimestamp: false,
+  showLevel: false,
+  codec: 'utf-8',
+});
 function showVersion(): void {
   const packageJson = JSON.parse(
     fs.readFileSync(path.join(__dirname, '../../package.json'), 'utf-8')
@@ -51,13 +56,13 @@ function openDocs(): void {
 }
 
 function showHelp(): void {
-  console.log(`
-Spectral CLI - The fastest logging library for Node.js
+  spec.log(`
+${spec.color('Spectral CLI - The fastest logging library for Node.js', '#00bfff')}
 
-Usage:
+${spec.color('Usage:', '#00bfff')}
   spec [command] [options]
 
-Commands:
+${spec.color('Commands:', '#00bfff')}
   --version, -v       Show version
   --help, -h          Show this help
   config              Show current configuration
@@ -67,7 +72,7 @@ Commands:
   doctor              Diagnose environment and color support
   docs                Open SpectralLogs docs in your default browser
 
-Examples:
+${spec.color('Examples:', '#00bfff')}
   spec --version
   spec config
   spec config set debugMode=true
@@ -79,7 +84,7 @@ Examples:
 function showConfig(): void {
   const config = spec.getConfig();
   spec.info('Current Spectral Configuration:');
-  console.log(JSON.stringify(config, null, 2));
+  spec.log(JSON.stringify(config, null, 2));
 }
 
 function setConfig(keyValue: string): void {
@@ -131,43 +136,43 @@ function runBenchmark(): void {
 
   const spectralStart = performance.now();
   for (let i = 0; i < iterations; i++) {
-    spec.log(`Benchmark test ${i}`);
+    spec.log(`Benchmark test ${i}`, '#00bfff');
   }
   spec.flush();
   const spectralEnd = performance.now();
   const spectralTime = spectralEnd - spectralStart;
 
-  console.log('');
-  spec.success('Benchmark Results:');
-  console.log(`  console.log: ${consoleTime.toFixed(2)}ms (${(iterations / (consoleTime / 1000)).toFixed(0)} logs/sec)`);
-  console.log(`  Spectral:    ${spectralTime.toFixed(2)}ms (${(iterations / (spectralTime / 1000)).toFixed(0)} logs/sec)`);
+  spec.log('');
+  spec.log('Benchmark Results:');
+  spec.log(`  console.log: ${consoleTime.toFixed(2)}ms (${(iterations / (consoleTime / 1000)).toFixed(0)} logs/sec)`);
+  spec.log(`  Spectral:    ${spectralTime.toFixed(2)}ms (${(iterations / (spectralTime / 1000)).toFixed(0)} logs/sec)`);
 
   const diff = ((consoleTime - spectralTime) / consoleTime * 100);
   if (diff > 0) {
-    console.log(`  Spectral is ${diff.toFixed(1)}% faster! 🚀`);
+    spec.log(`  Spectral is ${diff.toFixed(1)}% faster! 🚀`);
   } else {
-    console.log(`  console.log is ${Math.abs(diff).toFixed(1)}% faster`);
+    spec.log(`  console.log is ${Math.abs(diff).toFixed(1)}% faster`);
   }
 }
 
 function runDoctor(): void {
   spec.info('Spectral Environment Diagnostics');
-  console.log('');
+  spec.log('');
 
   const env = process.env;
   const isTTY = process.stdout.isTTY;
 
-  console.log('Environment:');
-  console.log(`  Node Version: ${process.version}`);
-  console.log(`  Platform: ${process.platform}`);
-  console.log(`  Architecture: ${process.arch}`);
-  console.log('');
+  spec.log('Environment:');
+  spec.log(`  Node Version: ${process.version}`);
+  spec.log(`  Platform: ${process.platform}`);
+  spec.log(`  Architecture: ${process.arch}`);
+  spec.log('');
 
-  console.log('Terminal Support:');
-  console.log(`  TTY: ${isTTY ? 'Yes' : 'No'}`);
-  console.log(`  COLORTERM: ${env.COLORTERM || 'not set'}`);
-  console.log(`  TERM: ${env.TERM || 'not set'}`);
-  console.log('');
+  spec.log('Terminal Support:');
+  spec.log(`  TTY: ${isTTY ? 'Yes' : 'No'}`);
+  spec.log(`  COLORTERM: ${env.COLORTERM || 'not set'}`);
+  spec.log(`  TERM: ${env.TERM || 'not set'}`);
+  spec.log('');
 
   const { detectColorSupport } = require('../utils/colors');
   const colorSupport = detectColorSupport();
@@ -175,8 +180,8 @@ function runDoctor(): void {
   spec.success(`Color Support: ${colorSupport ? 'Enabled' : 'Disabled'}`);
 
   if (colorSupport) {
-    console.log('');
-    console.log('Color Test:');
+    spec.log('');
+    spec.log('Color Test:');
     spec.log('  Default log', '#dddddd');
     spec.info('  Info message', '#00bfff');
     spec.success('  Success message', '#00ff88');
