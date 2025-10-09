@@ -10,7 +10,7 @@ Spectral is a high-performance, zero-dependency logging library designed to repl
 
 Official [Website](https://ztamdev.github.io/SpectralLogs) | 
 Documentation [Docs](https://ztamdev.github.io/SpectralLogs/getting-started.html) | 
-[Roadmap](https://ztamdev.github.io/SpectralLogs/roadmap.html)
+Roadmap [Roadmap](https://ztamdev.github.io/SpectralLogs/roadmap.html)
 
 </div>
 
