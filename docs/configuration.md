@@ -10,7 +10,7 @@ This page explains how to configure SpectralLogs at runtime in both Node and Web
 Use `configure()` to update settings dynamically.
 
 ```ts
-// Node
+// Node / Bun / Deno
 import spec from 'spectrallogs';
 
 spec.configure({
@@ -63,7 +63,7 @@ spec.debug('Only shown when debugMode=true');
 
 ```ts
 spec.flush();
-// Node: force flush buffered stdout/stderr
+// Node / Bun / Deno: force flush buffered stdout/stderr
 // Web: flush the batching queue
 ```
 

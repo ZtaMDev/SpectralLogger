@@ -3,7 +3,7 @@
 layout: home
 hero:
   name: Spectral Logs
-  text: High-performance logging for Node & Web
+  text: High-performance logging for Node, Web, Bun & Deno
   tagline: Beautiful colors, clean formatting, blazing-fast output, and an extensible plugin system.
   image:
     src: /logo.png
@@ -36,7 +36,7 @@ features:
     details: Fully typed API with IntelliSense and zero runtime dependencies.
   - icon: { src: /icons/universal.svg }
     title: Universal
-    details: Import 'spectrallogs' in Node and 'spectrallogs/web' in browsers or from CDN (esm.sh).
+    details: Node, Bun, Deno, and Web. Use 'spectrallogs' on server runtimes and 'spectrallogs/web' in browsers or via CDN (esm.sh).
 ---
 
 <!-- Optional extra section on the home page -->
@@ -52,11 +52,10 @@ SpectralLogs replaces `console.log` with a fast, beautiful, and flexible logger.
 - Node and Web builds in a single package
 
 ```ts
-// Node
+// Node / Bun / Deno
 import spec from 'spectrallogs';
 spec.info('Node ready');
 
 // Web
 import web from 'spectrallogs/web';
 web.success('Web ready');
-```

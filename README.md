@@ -4,7 +4,7 @@
 
 # Spectral Logs
 
-> The fastest, most elegant logging library for Node.js and TypeScript
+> The fastest, most elegant logging library for Node.js, TypeScript, Bun, and Deno
 
 Spectral is a high-performance, zero-dependency logging library designed to replace `console.log` with beautiful colors, advanced formatting, and incredible speed.
 
@@ -28,6 +28,27 @@ Documentation [Docs](https://ztamdev.github.io/SpectralLogs/getting-started.html
 
 ```bash
 npm install spectrallogs
+```
+
+### Bun
+
+```bash
+bun add spectrallogs
+```
+
+### Deno (npm specifier)
+
+Enable npm specifiers in `deno.json` and import:
+
+```ts
+// deno.json
+{
+  "nodeModulesDir": true
+}
+
+// main.ts
+import spec from 'npm:spectrallogs';
+spec.info('Deno ready');
 ```
 
 ## Quick Start
@@ -95,7 +116,7 @@ Spectral lets you color inline segments and register custom color names.
 - You can also register custom names via `spec.color.add(name, color)`.
 
 ```ts
-// Node
+// Node / Bun / Deno
 import spec from 'spectrallogs';
 
 // Register custom colors
