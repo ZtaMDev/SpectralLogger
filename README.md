@@ -529,8 +529,6 @@ const logger = new SpectralLogger();
 logger.info('Fully typed');
 ```
 
-Perfecto, aquí tienes un fragmento breve y profesional para colocar dentro del README.md (por ejemplo justo debajo de la sección “## Contributing” existente), coherente con tu flujo de trabajo y las reglas del proyecto:
-
 ---
 
 ## Contributing
