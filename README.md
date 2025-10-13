@@ -539,12 +539,12 @@ All contributions are welcome.
 Please note that the main branch is protected — all changes must be made through pull requests.
 
 To contribute:
-	1.	Fork the repository and create a feature branch (feat/, fix/, etc.).
-	2.	Run checks before submitting:
+  1.	Fork the repository and create a feature branch (feat/, fix/, etc.).
+  2.	Run checks before submitting:
 
-```bash
-npm run build
-```
+  ```bash
+  npm run build
+  ```
 
   3.	Submit a Pull Request to the main branch.
 	  •	Direct pushes are not allowed.
