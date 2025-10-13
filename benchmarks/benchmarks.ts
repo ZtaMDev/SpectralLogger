@@ -102,7 +102,7 @@ class BenchmarkRunner {
     console.log("=".repeat(80));
   }
 
-  saveResults(filename = "logger-benchmark-results.json"): void {
+  saveResults(filename = "benchmark-results.json"): void {
     const dir = join(process.cwd(), "benchmarks", "results");
     mkdirSync(dir, { recursive: true });
     const file = join(dir, filename);
