@@ -529,10 +529,32 @@ const logger = new SpectralLogger();
 logger.info('Fully typed');
 ```
 
+Perfecto, aquí tienes un fragmento breve y profesional para colocar dentro del README.md (por ejemplo justo debajo de la sección “## Contributing” existente), coherente con tu flujo de trabajo y las reglas del proyecto:
+
+⸻
+
 ## Contributing
 
-Contributions are welcome! Please feel free to submit issues and pull requests.
+All contributions are welcome.
+Please note that the main branch is protected — all changes must be made through pull requests.
 
+To contribute:
+	1.	Fork the repository and create a feature branch (feat/, fix/, etc.).
+	2.	Run checks before submitting:
+
+```bash
+npm run build
+```
+
+	3.	Submit a Pull Request to the main branch.
+	•	Direct pushes are not allowed.
+	•	All CI checks must pass.
+	•	At least one maintainer approval is required before merging.
+
+For detailed contribution guidelines, see the [CONTRIBUTING.md](./CONTRIBUTING.md) file.
+
+⸻
+ 
 ## License
 
 MIT
