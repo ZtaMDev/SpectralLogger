@@ -14,7 +14,7 @@
       "types": "./dist-web/index.d.ts",
       "import": "./dist-web/index.js"
     }
-  }, 
+  },
   "bin": {
     "spec": "dist/cli/index.js"
   },
@@ -34,7 +34,8 @@
     "docs:build": "vitepress build docs",
     "docs:preview": "vitepress preview docs",
     "prepublishOnly": "npm run build:all",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "bench": "bun benchmarks/benchmarks.mts"
   },
   "keywords": [
     "logger",
@@ -64,7 +65,11 @@
   },
   "devDependencies": {
     "@types/node": "^24.7.0",
+    "log4js": "^6.9.1",
+    "pino": "^9.13.1",
+    "spectrallogs": "latest",
     "typescript": "^5.9.3",
-    "vitepress": "^1.6.4"
+    "vitepress": "^1.6.4",
+    "winston": "^3.14.0"
   }
 }
