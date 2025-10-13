@@ -38,10 +38,12 @@ jobs:
       run: bun install
 
     - name: Build project (TypeScript)
+      shell: bash
       run: |
         if [ -f tsconfig.json ]; then
           bun run tsc
         fi
+
 
     - name: Run benchmark suite (loggers)
       run: bun run benchmarks/benchmarks.ts loggers
