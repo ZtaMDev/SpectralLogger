@@ -53,7 +53,7 @@ git checkout -b feat/improve-color-system
 ```
 
 ### Recommended prefixes:
-- `feat/` {name} new features  
+- `feat/` {name} new features  
 - `fix/` {name} bug fixes  
 - `docs/` {name} documentation changes  
 - `refactor/` {name} code refactors (no functional changes)  
