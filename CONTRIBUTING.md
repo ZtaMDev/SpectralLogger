@@ -77,9 +77,7 @@ npm install
 Before opening a pull request, ensure the code builds successfully and passes all checks.
 
 ```bash
-npm run build
-npm run lint
-npm test
+npm run build:all
 ```
 
 ---
@@ -164,8 +162,6 @@ This allows discussion of design, performance implications, and compatibility be
 
 Before submitting a PR, verify the following:
 - Code builds successfully (`npm run build`)  
-- Linting and formatting pass (`npm run lint` and `npm run format`)  
-- All tests pass (`npm test`)  
 - Documentation or examples updated (if applicable)  
 - Commit messages follow Conventional Commits  
 - The PR description clearly explains the change and motivation  
