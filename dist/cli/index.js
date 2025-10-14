@@ -46,6 +46,7 @@ spec.configure({
     debugMode: false,
     bufferWrites: true,
     timeFormat: 'iso',
+    asyncStacks: false,
     colors: {
         info: '#00bfff',
         success: '#00ff88',
@@ -64,6 +65,7 @@ const DEFAULT_CONF = {
     debugMode: false,
     bufferWrites: true,
     timeFormat: 'iso',
+    asyncStacks: true,
     colors: {
         info: '#00bfff',
         success: '#00ff88',
@@ -82,6 +84,7 @@ function validateSpectralConf(conf) {
         'debugMode',
         'bufferWrites',
         'timeFormat',
+        'asyncStacks',
         'colors',
     ];
     const invalidKeys = Object.keys(conf).filter(k => !allowedKeys.includes(k));
@@ -95,6 +98,8 @@ function validateSpectralConf(conf) {
     if (conf.debugMode !== undefined && typeof conf.debugMode !== 'boolean')
         return false;
     if (conf.bufferWrites !== undefined && typeof conf.bufferWrites !== 'boolean')
+        return false;
+    if (conf.asyncStacks !== undefined && typeof conf.asyncStacks !== 'boolean')
         return false;
     if (conf.timeFormat !== undefined &&
         !['iso', 'unix', 'locale'].includes(conf.timeFormat))

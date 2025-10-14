@@ -1,5 +1,5 @@
 const spec = require('../../dist/index').default;
-const config = require('../../specConf.js');
+const config = require('../../specConf.js').default;
 console.log('\n=== Spectral Logger Demo ===\n');
 
 spec.configure(config)

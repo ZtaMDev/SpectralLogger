@@ -11,5 +11,6 @@ export default {
     "error": "#ff5555",
     "log": "#dddddd",
     "debug": "#cc66ff"
-  }
+  },
+  "asyncStacks": true
 };
