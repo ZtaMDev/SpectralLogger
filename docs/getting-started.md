@@ -55,19 +55,33 @@ logger.flush();
 
 ```tsx
 // src/App.tsx
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import spec, { SpectralLoggerWeb } from 'spectrallogs/web';
 
 export default function App() {
+  const effectRan = useRef(false); // prevents double execution in Strict Mode
+
   useEffect(() => {
+    if (effectRan.current) return; // run only once
+    effectRan.current = true;
+
+    // Immediate log with spec
     spec.success('React + SpectralLogs');
-    const sink = (args: any[]) => console.log(...args);
+
+    // Create logger with batching and custom sink
+    const sink = (args: unknown[]) => console.log(...args);
     const logger = new SpectralLoggerWeb({ batching: true, sink });
+
+    // Batched log
     logger.info('Batched via custom sink');
+
+    // Force flush to ensure it appears after spec.success
     logger.flush();
   }, []);
+
   return <div>Open the console</div>;
 }
+
 ```
 
 ## Vite (vanilla)

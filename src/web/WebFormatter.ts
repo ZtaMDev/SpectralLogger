@@ -37,10 +37,12 @@ export class WebFormatter {
 
     if (showLevel) {
       const color = this.getLevelColor(level);
-      const lvlText = level.toUpperCase().padEnd(7);
-      parts.push('%c[' + lvlText + ']');
+      const lvlText = level.toUpperCase();
+      const padded = `[${lvlText}]`.padEnd(9);
+      parts.push('%c' + padded);
       styles.push(`color:${color};font-weight:600`);
     }
+
 
     const msgColor = options?.color ?? this.getLevelColor(level);
     // Parse inline markers: <<c:COLOR>>text<</c>> to segmented %c parts
