@@ -60,7 +60,7 @@ class BenchmarkRunner {
 
     const totalTime = endTime - startTime;
     const avgTime = totalTime / this.iterations;
-    const opsPerSec = (1000 / avgTime); // ✅ Cálculo corregido
+    const opsPerSec = (1000 / avgTime);
     const memoryUsed = endMem - startMem;
 
     const result: BenchmarkResult = {
