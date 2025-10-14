@@ -34,7 +34,6 @@ SpectralLogs outperforms other popular loggers in both speed and memory usage:
 ```
 SpectralLogs | █████████████████████ 17,249
 Pino         | ███████████ 9,843
-Console      | █████████ 7,543
 Winston      | ████████ 7,296
 Log4js       | ████████ 7,238
 ```
@@ -44,14 +43,9 @@ Log4js       | ████████ 7,238
 ```
 SpectralLogs | 0 bytes        █
 Pino         | 0 bytes        █
-Console      | 0 bytes        █
 Winston      | 0 bytes        █
 Log4js       | ~7.9 MB        █████████
 ```
-
-> ⚡ **SpectralLogs is ~2.3x faster than `console.log`** while using **virtually zero memory**, making it the fastest and most efficient logging library.
-
-
 
 ## What's Coming Next?
 
