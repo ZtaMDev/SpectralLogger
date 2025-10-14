@@ -31,17 +31,21 @@ SpectralLogs outperforms other popular loggers in both speed and memory usage.
 
 **Ops/sec (higher is better)**
 
+```bash
 SpectralLogs | ████████████████████████ 515,895
 Pino         | ██████████████████ 426,975
 Winston      | ████████████ 249,402
 Log4js       | ██████ 103,468
+```
 
 **Memory Usage (lower is better)**
 
+```bash
 SpectralLogs | 0.12 MB   █
 Pino         | 1.05 MB   ████
 Winston      | 7.51 MB   ████████████████████
 Log4js       | 0.31 MB   █
+```
 
 SpectralLogs achieves **up to 2× higher throughput** than Winston and uses **over 60× less memory**, demonstrating exceptional efficiency for production-grade logging.
 
