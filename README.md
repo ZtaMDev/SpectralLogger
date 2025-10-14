@@ -24,7 +24,7 @@ Roadmap [Roadmap](https://ztamdev.github.io/SpectralLogs/roadmap.html)
 - **Plugin System** - Extensible architecture for custom functionality
 - **Zero Dependencies** - Minimal footprint, maximum performance
 - **CLI Tools** - Built-in diagnostics, benchmarking, and configuration management
-- 
+
 ---
 
 ## Performance Comparison (Using Bun)
