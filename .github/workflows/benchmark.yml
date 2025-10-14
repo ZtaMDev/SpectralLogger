@@ -99,7 +99,7 @@ jobs:
             const fs = require('fs');
             const reportPath = 'benchmarks/results/benchmark-report.md';
             if (!fs.existsSync(reportPath)) {
-              core.setFailed("No benchmark report generated");
+              throw new Error("No benchmark report generated");
             } else if (context.payload.pull_request) {
               const report = fs.readFileSync(reportPath, 'utf8');
               await github.rest.issues.createComment({
@@ -141,6 +141,6 @@ jobs:
         run: bun install
 
       - name: Check for performance regressions
-        run: bun run scripts/check-performance-regressions.ts
+        run: bun run scripts/check-performance-regressions.js
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
