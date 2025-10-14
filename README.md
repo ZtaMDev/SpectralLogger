@@ -47,7 +47,7 @@ Winston      | 7.51 MB   ██████████████████�
 Log4js       | 0.31 MB   █
 ```
 
-SpectralLogs achieves **up to 2× higher throughput** than Winston and uses **over 60× less memory**, demonstrating exceptional efficiency for production-grade logging.
+> SpectralLogs achieves **up to 2× higher throughput** than Winston and uses **over 60× less memory**, demonstrating exceptional efficiency for production-grade logging.
 
 ## What's Coming Next?
 
