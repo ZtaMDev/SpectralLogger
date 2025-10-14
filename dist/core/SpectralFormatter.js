@@ -30,8 +30,7 @@ class SpectralFormatter {
         }
         if (showLevel) {
             const levelColor = this.getLevelColor(level);
-            const levelText = level.toUpperCase().padEnd(7);
-            parts.push((0, colors_1.colorize)(`[${levelText}]`, levelColor));
+            parts.push((0, colors_1.colorize)(`[${level.toUpperCase()}]`.padEnd(9), levelColor));
         }
         const messageColor = options?.color ?? this.getLevelColor(level);
         // Compute outer ANSI and make inline RESETs re-apply outer color to avoid losing it

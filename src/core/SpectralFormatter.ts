@@ -39,8 +39,7 @@ export class SpectralFormatter {
 
     if (showLevel) {
       const levelColor = this.getLevelColor(level);
-      const levelText = level.toUpperCase().padEnd(7);
-      parts.push(colorize(`[${levelText}]`, levelColor));
+      parts.push(colorize(`[${level.toUpperCase()}]`.padEnd(9), levelColor));
     }
 
     const messageColor = options?.color ?? this.getLevelColor(level);
