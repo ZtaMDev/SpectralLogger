@@ -45,6 +45,11 @@ jobs:
             bun run tsc
           fi
 
+      - name: Run benchmark suite
+        run: bun run benchmarks/benchmarks.ts
+        env:
+          NODE_ENV: production
+
       - name: Run improved benchmark suite
         run: bun --expose-gc run benchmarks/improved-benchmarks.ts
         env:
@@ -87,6 +92,13 @@ jobs:
           pattern: benchmark-results-*
           merge-multiple: true
 
+      - name: Download improved benchmark artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: benchmarks/results
+          pattern: improved-benchmark-results-*
+          merge-multiple: true
+
       - name: Install dependencies
         run: bun install
 
@@ -105,8 +117,8 @@ jobs:
       - name: Verify report generation
         shell: bash
         run: |
-          if [ ! -f benchmarks/results/benchmark-report.md ]; then
-            echo "::warning::Benchmark report not generated, skipping."
+          if [ ! -f benchmarks/results/benchmark-report.md ] && [ ! -f benchmarks/results/improved-benchmark-report.md ]; then
+            echo "::warning::No benchmark reports generated, skipping."
           fi
 
       - name: Post report as PR comment (if applicable)
@@ -115,7 +127,10 @@ jobs:
         with:
           script: |
             const fs = require('fs');
-            const reportPath = 'benchmarks/results/benchmark-report.md';
+            let reportPath = 'benchmarks/results/improved-benchmark-report.md';
+            if (!fs.existsSync(reportPath)) {
+              reportPath = 'benchmarks/results/benchmark-report.md';
+            }
             if (!fs.existsSync(reportPath)) {
               console.log("No benchmark report found, skipping comment.");
             } else {
@@ -128,11 +143,14 @@ jobs:
               });
             }
 
-      - name: Upload benchmark report
+      - name: Upload benchmark reports
         uses: actions/upload-artifact@v4
         with:
-          name: benchmark-report
-          path: benchmarks/results/benchmark-report.md
+          name: benchmark-reports
+          path: |
+            benchmarks/results/benchmark-report.md
+            benchmarks/results/improved-benchmark-report.md
+          retention-days: 30
 
   performance-check:
     name: Performance Regression Check
@@ -153,6 +171,13 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           pattern: benchmark-results-*
+          path: benchmarks/results
+          merge-multiple: true
+
+      - name: Download improved benchmark artifacts
+        uses: actions/download-artifact@v4
+        with:
+          pattern: improved-benchmark-results-*
           path: benchmarks/results
           merge-multiple: true
 
