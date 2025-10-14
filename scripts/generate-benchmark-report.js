@@ -17,7 +17,7 @@ try {
     report += `- Ops/sec: ${Math.round(r.opsPerSec).toLocaleString()}\n`;
     report += `- Memory Used: ${r.memoryUsed} bytes\n\n`;
   });
-
+ 
   writeFileSync(reportFile, report);
   console.log("Benchmark report generated at", reportFile);
 } catch (err) {
