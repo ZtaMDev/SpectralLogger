@@ -1,42 +1,42 @@
 [
   {
     "name": "spectrallogs - simple",
-    "totalTime": 579.7535000000007,
-    "avgTime": 0.05797535000000007,
-    "opsPerSec": 17248.71001209995,
-    "memoryUsed": 0,
-    "iterations": 10000
-  },
-  {
-    "name": "pino - simple",
-    "totalTime": 1016.0007,
-    "avgTime": 0.10160007,
-    "opsPerSec": 9842.51290378048,
+    "totalTime": 354.4222999999997,
+    "avgTime": 0.03544222999999997,
+    "opsPerSec": 28214.928913897373,
     "memoryUsed": 0,
     "iterations": 10000
   },
   {
     "name": "console - simple",
-    "totalTime": 1325.7794000000004,
-    "avgTime": 0.13257794000000003,
-    "opsPerSec": 7542.732976541948,
+    "totalTime": 777.9462000000001,
+    "avgTime": 0.07779462000000001,
+    "opsPerSec": 12854.359337445185,
     "memoryUsed": 0,
     "iterations": 10000
   },
   {
     "name": "winston - simple",
-    "totalTime": 1370.7074000000002,
-    "avgTime": 0.13707074000000002,
-    "opsPerSec": 7295.503037336778,
+    "totalTime": 921.2226,
+    "avgTime": 0.09212226000000001,
+    "opsPerSec": 10855.139680680868,
+    "memoryUsed": 0,
+    "iterations": 10000
+  },
+  {
+    "name": "pino - simple",
+    "totalTime": 949.5409,
+    "avgTime": 0.09495408999999999,
+    "opsPerSec": 10531.405229622022,
     "memoryUsed": 0,
     "iterations": 10000
   },
   {
     "name": "log4js - simple",
-    "totalTime": 1381.5249999999996,
-    "avgTime": 0.13815249999999996,
-    "opsPerSec": 7238.377879517203,
-    "memoryUsed": 7985417,
+    "totalTime": 1133.0291000000002,
+    "avgTime": 0.11330291000000002,
+    "opsPerSec": 8825.898646380749,
+    "memoryUsed": 9057957,
     "iterations": 10000
   }
 ]

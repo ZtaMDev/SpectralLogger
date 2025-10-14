@@ -45,8 +45,8 @@ jobs:
             bun run tsc
           fi
 
-      - name: Run benchmark suite
-        run: bun run benchmarks/benchmarks.ts
+      - name: Run improved benchmark suite
+        run: bun --expose-gc run benchmarks/improved-benchmarks.ts
         env:
           NODE_ENV: production
 
@@ -90,7 +90,6 @@ jobs:
           if [ ! -f benchmarks/results/benchmark-report.md ]; then
             echo "::warning::Benchmark report not generated, skipping."
           fi
-
 
       - name: Post report as PR comment (if applicable)
         uses: actions/github-script@v7
