@@ -9,12 +9,12 @@ import { types } from 'util';
 const spec = new SpectralLogger();
 const args = process.argv.slice(2);
 spec.configure({
-  showTimestamp: true,
-  showLevel: true,
+  showTimestamp: false,
+  showLevel: false,
   debugMode: false,
   bufferWrites: true,
   timeFormat: 'iso',
-  asyncStacks: false,
+  asyncStacks: true,
   colors: {
     info: '#00bfff',
     success: '#00ff88',
@@ -255,10 +255,10 @@ function openDocs(): void {
 
 function showHelp(): void {
   spec.log(`
-${spec.color('Spectral CLI - The fastest logging library for Node.js', '#00bfff')}
+${spec.color('Spectral CLI - The fastest logging library for Node / Bun / TypeScript', '#00bfff')}
 
 ${spec.color('Usage:', '#00bfff')}
-  spec [command] [options]
+  spec ${spec.color("[command]", "#2bff00ff")} ${spec.color("[options]", "#8c00ffff")}
 
 ${spec.color('Commands:', '#00bfff')}
   --version, -v       Show version

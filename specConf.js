@@ -1,9 +1,10 @@
 export default {
   "showTimestamp": false,
-  "showLevel": true,
+  "showLevel": false,
   "debugMode": false,
   "bufferWrites": true,
   "timeFormat": "iso",
+  "asyncStacks": true,
   "colors": {
     "info": "#00bfff",
     "success": "#00ff88",
@@ -11,6 +12,5 @@ export default {
     "error": "#ff5555",
     "log": "#dddddd",
     "debug": "#cc66ff"
-  },
-  "asyncStacks": true
+  }
 };

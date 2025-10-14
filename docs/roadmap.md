@@ -417,12 +417,12 @@ description: SpectralLogs development roadmap and future plans
         </p>
         <ul class="timeline-features">
           <li>50% performance improvement over console.log</li>
-        </ul>
-        <ul class="timeline-features planned">
           <li>Dynamic buffer optimization</li>
-          <li>Enhanced error handling and retry logic</li>
           <li>Improved TypeScript definitions</li>
           <li>Better encoding support</li>
+        </ul>
+        <ul class="timeline-features planned">
+          <li>Enhanced error handling and retry logic</li>
           <li>Race condition fixes</li>
         </ul>
         <div class="status-badge in-progress">

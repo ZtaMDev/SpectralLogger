@@ -69,6 +69,12 @@ export function detectColorSupport(): boolean {
 export function hexToRgb(hex: string): RGB | null {
   const normalized = hex.replace('#', '');
 
+  // Validar longitud
+  if (![3, 6, 8].includes(normalized.length)) {
+    return null;
+  }
+
+  // Expandir formato de 3 caracteres
   if (normalized.length === 3) {
     const r = parseInt(normalized[0] + normalized[0], 16);
     const g = parseInt(normalized[1] + normalized[1], 16);
@@ -76,14 +82,17 @@ export function hexToRgb(hex: string): RGB | null {
     return { r, g, b };
   }
 
-  if (normalized.length === 6) {
-    const r = parseInt(normalized.substring(0, 2), 16);
-    const g = parseInt(normalized.substring(2, 4), 16);
-    const b = parseInt(normalized.substring(4, 6), 16);
-    return { r, g, b };
+  // Para 6 y 8 caracteres, usar solo los primeros 6 (ignorar canal alfa)
+  const r = parseInt(normalized.substring(0, 2), 16);
+  const g = parseInt(normalized.substring(2, 4), 16);
+  const b = parseInt(normalized.substring(4, 6), 16);
+  
+  // Validar que los valores sean números válidos
+  if (isNaN(r) || isNaN(g) || isNaN(b)) {
+    return null;
   }
 
-  return null;
+  return { r, g, b };
 }
 
 export function parseRgbString(rgb: string): RGB | null {
@@ -112,6 +121,12 @@ export function rgbToAnsi256(rgb: RGB): string {
 const colorCache = new Map<string, string>();
 
 export function parseColor(color: ColorInput): string {
+  // Verificar que color sea un string
+  if (typeof color !== 'string') {
+    colorCache.set(String(color), '');
+    return '';
+  }
+
   if (colorCache.has(color)) {
     return colorCache.get(color)!;
   }
