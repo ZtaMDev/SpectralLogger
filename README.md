@@ -25,7 +25,7 @@ Roadmap [Roadmap](https://ztamdev.github.io/SpectralLogs/roadmap.html)
 - **Zero Dependencies** - Minimal footprint, maximum performance
 - **CLI Tools** - Built-in diagnostics, benchmarking, and configuration management
 
-## Performance Comparison
+## Performance Comparison (Using Bun)
 
 SpectralLogs outperforms other popular loggers in both speed and memory usage:
 
