@@ -1,93 +1,26 @@
 // scripts/generate-benchmark-report.js
-const { readFileSync, readdirSync, existsSync } = require('fs');
-const { join } = require('path');
+import { readFileSync, writeFileSync } from "fs";
+import { join } from "path";
 
-function generateReport() {
-  const artifactsDir = join(process.cwd(), 'artifacts');
-  const report = [];
-  
-  report.push('# 📊 SpectralLogs Benchmark Report');
-  report.push(`\nGenerated: ${new Date().toISOString()}`);
-  report.push('\n## Results Summary\n');
+const resultsFile = join("benchmarks", "results", "benchmark-results.json");
+const reportFile = join("benchmarks", "results", "benchmark-report.md");
 
-  // Recopilar todos los resultados
-  const allResults = [];
-  
-  try {
-    const artifactDirs = readdirSync(artifactsDir);
-    
-    for (const dir of artifactDirs) {
-      if (dir.startsWith('benchmark-results-')) {
-        const resultsPath = join(artifactsDir, dir, 'benchmark-results.json');
-        
-        if (existsSync(resultsPath)) {
-          const data = JSON.parse(readFileSync(resultsPath, 'utf8'));
-          allResults.push({
-            environment: data.environment,
-            results: data.results
-          });
-        }
-      }
-    }
+try {
+  const data = JSON.parse(readFileSync(resultsFile, "utf8"));
 
-    // Generar tabla comparativa
-    if (allResults.length > 0) {
-      report.push('### Performance Comparison (ops/sec)');
-      report.push('\n| Logger | Simple | Objects | Mixed Levels |');
-      report.push('|--------|--------|---------|--------------|');
-      
-      const firstResult = allResults[0].results;
-      const loggerNames = [...new Set(firstResult.map(r => r.name.split(' - ')[0]))];
-      
-      for (const loggerName of loggerNames) {
-        const simple = firstResult.find(r => r.name === `${loggerName} - simple`);
-        const objects = firstResult.find(r => r.name === `${loggerName} - objects`);
-        const mixed = firstResult.find(r => r.name === `${loggerName} - mixed levels`);
-        
-        if (simple && objects && mixed) {
-          report.push(`| ${loggerName} | ${Math.round(simple.opsPerSec).toLocaleString()} | ${Math.round(objects.opsPerSec).toLocaleString()} | ${Math.round(mixed.opsPerSec).toLocaleString()} |`);
-        }
-      }
-    }
+  let report = "# Benchmark Report\n\n";
 
-    // Agregar detalles por entorno
-    report.push('\n## Detailed Results by Environment\n');
-    
-    for (const envResult of allResults) {
-      const { environment, results } = envResult;
-      
-      report.push(`\n### ${environment.runtime} ${environment.nodeVersion} on ${environment.platform}-${environment.arch}`);
-      
-      // Top 3 más rápidos
-      const fastest = results
-        .filter(r => r.name.includes(' - simple'))
-        .sort((a, b) => b.opsPerSec - a.opsPerSec)
-        .slice(0, 3);
-      
-      if (fastest.length > 0) {
-        report.push('\n**Fastest Loggers:**');
-        fastest.forEach((result, index) => {
-          const medal = index === 0 ? '🥇' : index === 1 ? '🥈' : '🥉';
-          report.push(`${medal} **${result.name}**: ${Math.round(result.opsPerSec).toLocaleString()} ops/sec`);
-        });
-      }
-    }
+  data.forEach((r, i) => {
+    report += `## ${i + 1}. ${r.name}\n`;
+    report += `- Total Time: ${r.totalTime.toFixed(2)} ms\n`;
+    report += `- Avg Time per op: ${r.avgTime.toFixed(4)} ms\n`;
+    report += `- Ops/sec: ${Math.round(r.opsPerSec).toLocaleString()}\n`;
+    report += `- Memory Used: ${r.memoryUsed} bytes\n\n`;
+  });
 
-    // Recomendaciones
-    report.push('\n## Recommendations\n');
-    report.push('- ✅ **Use SpectralLogs** for maximum performance with rich features');
-    report.push('- ⚡ **Use simple stdout** if you only need basic logging without colors');
-    report.push('- 🐛 **Avoid console.log** in production for performance-critical applications');
-    report.push('- 📈 **Monitor memory usage** when logging large objects frequently');
-
-  } catch (error) {
-    report.push('\n❌ Error generating report: ' + error.message);
-  }
-
-  // Escribir reporte
-  const reportPath = join(process.cwd(), 'benchmark-report.md');
-  require('fs').writeFileSync(reportPath, report.join('\n'));
-  console.log('Benchmark report generated:', reportPath);
+  writeFileSync(reportFile, report);
+  console.log("Benchmark report generated at", reportFile);
+} catch (err) {
+  console.error("Error generating report:", err);
+  process.exit(1);
 }
-
-generateReport();
