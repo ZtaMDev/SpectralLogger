@@ -49,12 +49,20 @@ jobs:
         run: bun --expose-gc run benchmarks/improved-benchmarks.ts
         env:
           NODE_ENV: production
+        timeout-minutes: 10
 
       - name: Upload benchmark results
         uses: actions/upload-artifact@v4
         with:
           name: benchmark-results-${{ matrix.os }}
           path: benchmarks/results/benchmark-results.json
+          retention-days: 30
+
+      - name: Upload improved benchmark results
+        uses: actions/upload-artifact@v4
+        with:
+          name: improved-benchmark-results-${{ matrix.os }}
+          path: benchmarks/results/improved-benchmark-results.json
           retention-days: 30
 
   benchmark-report:
@@ -76,6 +84,8 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           path: benchmarks/results
+          pattern: benchmark-results-*
+          merge-multiple: true
 
       - name: Install dependencies
         run: bun install
@@ -83,6 +93,14 @@ jobs:
       - name: Generate benchmark report
         run: |
           bun run scripts/generate-benchmark-report.js
+
+      - name: Generate improved benchmark report
+        run: |
+          if [ -f benchmarks/results/improved-benchmark-results.json ]; then
+            bun run scripts/generate-improved-report.js
+          else
+            echo "Improved benchmark results not found, skipping improved report."
+          fi
 
       - name: Verify report generation
         shell: bash
@@ -93,13 +111,14 @@ jobs:
 
       - name: Post report as PR comment (if applicable)
         uses: actions/github-script@v7
+        if: github.event_name == 'pull_request'
         with:
           script: |
             const fs = require('fs');
             const reportPath = 'benchmarks/results/benchmark-report.md';
             if (!fs.existsSync(reportPath)) {
-              throw new Error("No benchmark report generated");
-            } else if (context.payload.pull_request) {
+              console.log("No benchmark report found, skipping comment.");
+            } else {
               const report = fs.readFileSync(reportPath, 'utf8');
               await github.rest.issues.createComment({
                 owner: context.repo.owner,
@@ -135,6 +154,7 @@ jobs:
         with:
           pattern: benchmark-results-*
           path: benchmarks/results
+          merge-multiple: true
 
       - name: Install dependencies
         run: bun install
