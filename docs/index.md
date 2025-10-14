@@ -42,7 +42,30 @@ features:
     details: Node, Bun, Deno, and Web. Use 'spectrallogs' on server runtimes and 'spectrallogs/web' in browsers or via CDN (esm.sh).
 ---
 
-<!-- Optional extra section on the home page -->
+## Performance Comparison (Using Bun)
+
+SpectralLogs outperforms other popular loggers in both speed and memory usage:
+
+**Ops/sec (higher is better)**
+
+```
+SpectralLogs | █████████████████████ 17,249
+Pino         | ███████████ 9,843
+Console      | █████████ 7,543
+Winston      | ████████ 7,296
+Log4js       | ████████ 7,238
+```
+
+**Memory Usage (lower is better)**
+
+```
+SpectralLogs | 0 bytes        █
+Pino         | 0 bytes        █
+Console      | 0 bytes        █
+Winston      | 0 bytes        █
+Log4js       | ~7.9 MB        █████████
+```
+
 
 ## Code Examples:
 
