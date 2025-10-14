@@ -1,7 +1,8 @@
 const spec = require('../../dist/index').default;
-
+const config = require('../../specConf.js');
 console.log('\n=== Spectral Logger Demo ===\n');
 
+spec.configure(config)
 spec.log('This is a normal log message');
 spec.info('This is an informational message');
 spec.success('Operation completed successfully!');
@@ -24,5 +25,4 @@ console.log('\n--- Object Logging ---\n');
 spec.log({ name: 'Spectral', version: '0.1.0', fast: true });
 
 console.log('\n--- Configuration ---\n');
-const config = spec.getConfig();
 console.log('Current configuration:', config);

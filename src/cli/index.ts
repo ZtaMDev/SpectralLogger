@@ -8,11 +8,203 @@ import * as path from 'path';
 const spec = new SpectralLogger();
 const args = process.argv.slice(2);
 spec.configure({
-  debugMode: true,
-  showTimestamp: false,
-  showLevel: false,
-  codec: 'utf-8',
+  showTimestamp: true,
+  showLevel: true,
+  debugMode: false,
+  bufferWrites: true,
+  timeFormat: 'iso',
+  colors: {
+    info: '#00bfff',
+    success: '#00ff88',
+    warn: '#ffaa00',
+    error: '#ff5555',
+    log: '#dddddd',
+    debug: '#cc66ff',
+  },
 });
+
+/* ────────────────────────────────────────────────
+ * CONFIG DEFAULTS + VALIDATION
+ * ──────────────────────────────────────────────── */
+
+const DEFAULT_CONF = {
+  showTimestamp: true,
+  showLevel: true,
+  debugMode: false,
+  bufferWrites: true,
+  timeFormat: 'iso',
+  colors: {
+    info: '#00bfff',
+    success: '#00ff88',
+    warn: '#ffaa00',
+    error: '#ff5555',
+    log: '#dddddd',
+    debug: '#cc66ff',
+  },
+};
+
+function validateSpectralConf(conf: any): boolean {
+  if (typeof conf !== 'object' || conf === null) return false;
+
+  const allowedKeys = [
+    'showTimestamp',
+    'showLevel',
+    'debugMode',
+    'bufferWrites',
+    'timeFormat',
+    'colors',
+  ];
+  const invalidKeys = Object.keys(conf).filter(k => !allowedKeys.includes(k));
+  if (invalidKeys.length > 0) {
+    spec.warn(`Unknown config keys: ${invalidKeys.join(', ')}`);
+  }
+
+  if (conf.showTimestamp !== undefined && typeof conf.showTimestamp !== 'boolean') return false;
+  if (conf.showLevel !== undefined && typeof conf.showLevel !== 'boolean') return false;
+  if (conf.debugMode !== undefined && typeof conf.debugMode !== 'boolean') return false;
+  if (conf.bufferWrites !== undefined && typeof conf.bufferWrites !== 'boolean') return false;
+  if (
+    conf.timeFormat !== undefined &&
+    !['iso', 'unix', 'locale'].includes(conf.timeFormat)
+  ) return false;
+
+  if (conf.colors !== undefined) {
+    if (typeof conf.colors !== 'object' || Array.isArray(conf.colors)) return false;
+    for (const [k, v] of Object.entries(conf.colors)) {
+      if (typeof v !== 'string' || !v.startsWith('#')) {
+        spec.warn(`Invalid color for "${k}": ${v}`);
+        return false;
+      }
+    }
+  }
+
+  return true;
+}
+
+
+function findProjectRoot(startDir = process.cwd()): string | null {
+  let dir = startDir;
+  while (dir !== path.parse(dir).root) {
+    const pkgPath = path.join(dir, 'package.json');
+    if (fs.existsSync(pkgPath)) {
+      const pkg = JSON.parse(fs.readFileSync(pkgPath, 'utf-8'));
+      if (pkg.dependencies?.spectrallogs || pkg.devDependencies?.spectrallogs) {
+        return dir;
+      }
+    }
+    dir = path.dirname(dir);
+  }
+  return null;
+}
+
+function findSpecConf(startDir = process.cwd()): string | null {
+  let found: string | null = null;
+  const search = (dir: string) => {
+    const entries = fs.readdirSync(dir, { withFileTypes: true });
+    for (const entry of entries) {
+      const fullPath = path.join(dir, entry.name);
+      if (entry.isFile() && entry.name === 'specConf.js') {
+        found = fullPath;
+        return;
+      }
+      if (entry.isDirectory() && !['node_modules', '.git'].includes(entry.name)) {
+        search(fullPath);
+        if (found) return;
+      }
+    }
+  };
+  try {
+    search(startDir);
+  } catch (_) {}
+  return found;
+}
+function getSpecConfPath(): string {
+  const projectRoot = findProjectRoot() || process.cwd();
+  const existingConf = findSpecConf(projectRoot);
+  return existingConf || path.join(projectRoot, 'specConf.js');
+}
+
+function ensureSpecConf(): Record<string, any> {
+  const confPath = getSpecConfPath();
+
+  if (!fs.existsSync(confPath)) {
+    fs.writeFileSync(
+      confPath,
+      `export default ${JSON.stringify(DEFAULT_CONF, null, 2)};\n`,
+      'utf-8'
+    );
+    spec.success(`Created default specConf.js at ${confPath}`);
+    return DEFAULT_CONF;
+  }
+
+  const fileData = fs.readFileSync(confPath, 'utf-8');
+  const match = fileData.match(/export\s+default\s+(\{[\s\S]*\});?/);
+  if (!match) {
+    spec.error('specConf.js is invalid — missing "export default" object.');
+    process.exit(1);
+  }
+
+  let conf;
+  try {
+    conf = eval('(' + match[1] + ')');
+  } catch {
+    spec.error('Failed to parse specConf.js');
+    process.exit(1);
+  }
+
+  if (!validateSpectralConf(conf)) {
+    spec.error('specConf.js contains invalid values.');
+    process.exit(1);
+  }
+
+  return conf;
+}
+
+/* ────────────────────────────────────────────────
+ * CONFIG COMMANDS (updated)
+ * ──────────────────────────────────────────────── */
+
+function setConfig(keyValue: string): void {
+  const [key, value] = keyValue.split('=');
+  if (!key || value === undefined) {
+    spec.error('Invalid format. Use: config set <key>=<value>');
+    return;
+  }
+
+  const confPath = getSpecConfPath();
+  const conf = ensureSpecConf();
+
+  if (key.startsWith('colors.')) {
+    const colorKey = key.split('.')[1];
+    if (!conf.colors) conf.colors = {};
+    conf.colors[colorKey] = value;
+  } else {
+    const parsed =
+      value === 'true' ? true :
+      value === 'false' ? false :
+      !isNaN(Number(value)) ? Number(value) :
+      value;
+    conf[key] = parsed;
+  }
+
+  if (!validateSpectralConf(conf)) {
+    spec.error(`Invalid configuration value for key: ${key}`);
+    return;
+  }
+
+  fs.writeFileSync(confPath, `export default ${JSON.stringify(conf, null, 2)};\n`, 'utf-8');
+  spec.success(`Updated ${key} = ${value} in specConf.js`);
+}
+
+function resetConfig(): void {
+  const confPath = getSpecConfPath();
+  fs.writeFileSync(
+    confPath,
+    `export default ${JSON.stringify(DEFAULT_CONF, null, 2)};\n`,
+    'utf-8'
+  );
+  spec.success(`Reset configuration to defaults at ${confPath}`);
+}
 function showVersion(): void {
   const packageJson = JSON.parse(
     fs.readFileSync(path.join(__dirname, '../../package.json'), 'utf-8')
@@ -85,40 +277,6 @@ function showConfig(): void {
   const config = spec.getConfig();
   spec.info('Current Spectral Configuration:');
   spec.log(JSON.stringify(config, null, 2));
-}
-
-function setConfig(keyValue: string): void {
-  const [key, value] = keyValue.split('=');
-
-  if (!key || !value) {
-    spec.error('Invalid format. Use: config set <key>=<value>');
-    return;
-  }
-
-  const config: any = {};
-
-  if (key === 'debugMode' || key === 'showTimestamp' || key === 'showLevel') {
-    config[key] = value === 'true';
-  } else if (key === 'codec') {
-    config[key] = value;
-  } else if (key === 'timeFormat') {
-    config[key] = value;
-  } else if (key.startsWith('colors.')) {
-    const colorKey = key.split('.')[1];
-    config.colors = { [colorKey]: value };
-  } else {
-    spec.error(`Unknown configuration key: ${key}`);
-    return;
-  }
-
-  spec.configure(config);
-  spec.success(`Configuration updated: ${key} = ${value}`);
-}
-
-function resetConfig(): void {
-  const { SpectralConfig } = require('../core/SpectralConfig');
-  SpectralConfig.getInstance().reset();
-  spec.success('Configuration reset to defaults');
 }
 
 function runBenchmark(): void {
