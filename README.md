@@ -25,29 +25,33 @@ Roadmap [Roadmap](https://ztamdev.github.io/SpectralLogs/roadmap.html)
 - **Zero Dependencies** - Minimal footprint, maximum performance
 - **CLI Tools** - Built-in diagnostics, benchmarking, and configuration management
 
+---
+
 ## Performance Comparison (Using Bun)
 
-SpectralLogs outperforms other popular loggers in both speed and memory usage.
+SpectralLogs continues to outperform other popular loggers in both **speed** and **memory efficiency**, thanks to recent GC optimizations and warm-up handling.
 
 **Ops/sec (higher is better)**
 
 ```bash
-SpectralLogs | ████████████████████████ 515,895
-Pino         | ██████████████████ 426,975
-Winston      | ████████████ 249,402
-Log4js       | ██████ 103,468
+SpectralLogs | ████████████████████████████████ 1,187,120
+Console       | ███████████████████████ 675,645
+Pino          | ██████████████ 236,886
+Log4js        | ███████ 102,826
+Winston       | ████ 72,133
 ```
 
 **Memory Usage (lower is better)**
 
 ```bash
-SpectralLogs | 0.12 MB   █
-Pino         | 1.05 MB   ████
-Winston      | 7.51 MB   ████████████████████
-Log4js       | 0.31 MB   █
+Console       | 0.03 MB   █
+SpectralLogs  | 0.19 MB   █
+Log4js        | 0.34 MB   ██
+Pino          | 0.46 MB   ███
+Winston       | 5.55 MB   ██████████████████████
 ```
 
-> SpectralLogs achieves **up to 2× higher throughput** than Winston and uses **over 60× less memory**, demonstrating exceptional efficiency for production-grade logging.
+> ⚡ **SpectralLogs is now ~43% faster than `console.log`** and **up to 94% faster than Winston**, while keeping memory usage **extremely low** at just **0.19 MB**.
 
 ## What's Coming Next?
 
