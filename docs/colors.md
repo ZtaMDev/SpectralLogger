@@ -5,6 +5,11 @@ description: How to color inline text and register custom colors in SpectralLogs
 
 # Colors
 
+## Supported Named Colors
+
+`black`, `red`, `green`, `yellow`, `blue`, `magenta`, `cyan`, `white`, `gray`, `grey`, `orange`, `purple`, `pink`, `brown`, `lime`, `navy`, `teal`, `olive`, `maroon`
+
+
 - **Inline color helper (Node + Web API parity)**: `spec.color(text, nameOrColor)`
 - **Add custom colors**: `spec.color.add(name, color)`
 
