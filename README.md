@@ -34,7 +34,7 @@ SpectralLogs continues to outperform other popular loggers in both **speed** and
 **Ops/sec (higher is better)**
 
 ```bash
-SpectralLogs | ████████████████████████████████ 1,187,120
+SpectralLogs  | ████████████████████████████████ 1,187,120
 Console       | ███████████████████████ 675,645
 Pino          | ██████████████ 236,886
 Log4js        | ███████ 102,826
