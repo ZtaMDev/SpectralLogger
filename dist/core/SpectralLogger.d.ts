@@ -36,6 +36,7 @@ export declare class SpectralLogger {
      */
     use(plugin: Plugin): void;
     private executePlugins;
+    private writeQueue;
     private writeLog;
     /** Create a child logger that prefixes messages with a scope label and inherits config/plugins. */
     child(scope: string): SpectralLogger;
@@ -51,8 +52,13 @@ export declare class SpectralLogger {
     error(message: any, color?: string, codec?: BufferEncoding): void;
     /** Log a debug message (emitted only when `debugMode` is enabled). */
     debug(message: any, color?: string, codec?: BufferEncoding): void;
-    /** Force-flush any buffered output to stdout/stderr. */
+    /** Force-flush any buffered output to stdout/stderr (retrocompatible, no bloqueante). */
     flush(): void;
+    /**
+      * Awaitable flush — ensures it completes before continuing.
+      * Use it in tests or during shutdown: `await logger.flushAsync()`.
+    */
+    flushAsync(): Promise<void>;
     /** Get the current, fully-resolved configuration. */
     getConfig(): Required<SpectralConfigOptions>;
     /** Get the internal error cache and counters (diagnostics). */

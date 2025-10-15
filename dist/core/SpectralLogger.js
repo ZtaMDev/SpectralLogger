@@ -77,30 +77,47 @@ class SpectralLogger {
         }
         return processedMessage;
     }
+    writeQueue = Promise.resolve();
     writeLog(message, level, color, codec) {
-        if (level === 'debug' && !this.config.debugMode) {
-            return;
-        }
-        let messageStr;
-        if (message instanceof Error) {
-            messageStr = this.errorHandler.handle(message);
-        }
-        else if (typeof message === 'object') {
-            messageStr = JSON.stringify(message, null, 2);
-        }
-        else {
-            messageStr = String(message);
-        }
-        const options = {
-            color,
-            codec: codec ?? this.config.codec,
-        };
-        messageStr = this.executePlugins(messageStr, level, options, 'before');
-        // Prepend scope if present
-        const scopedMessage = this.scope ? `[${this.scope}] ${messageStr}` : messageStr;
-        const formatted = this.formatter.format(scopedMessage, level, options);
-        this.output.write(formatted, level, options.codec);
-        this.executePlugins(messageStr, level, options, 'after');
+        // capturamos los argumentos para la closure
+        const captured = { message, level, color, codec };
+        // encadenamos la tarea en la cola
+        this.writeQueue = this.writeQueue.then(async () => {
+            // Si es debug y debugMode está deshabilitado, nos salimos pronto
+            if (captured.level === 'debug' && !this.config.debugMode) {
+                return;
+            }
+            let messageStr;
+            if (captured.message instanceof Error) {
+                messageStr = this.errorHandler.handle(captured.message);
+            }
+            else if (typeof captured.message === 'object') {
+                messageStr = JSON.stringify(captured.message, null, 2);
+            }
+            else {
+                messageStr = String(captured.message);
+            }
+            const options = {
+                color: captured.color,
+                codec: captured.codec ?? this.config.codec,
+            };
+            // Ejecutar plugins 'before' (síncrono como ya tienes)
+            messageStr = this.executePlugins(messageStr, captured.level, options, 'before');
+            // Prepend scope if present
+            const scopedMessage = this.scope ? `[${this.scope}] ${messageStr}` : messageStr;
+            // Formatear (síncrono)
+            const formatted = this.formatter.format(scopedMessage, captured.level, options);
+            // Escribir en la capa de salida (que a su vez tiene sus propias colas)
+            this.output.write(formatted, captured.level, options.codec);
+            // Ejecutar plugins 'after'
+            this.executePlugins(messageStr, captured.level, options, 'after');
+        }).catch(err => {
+            // No romper la cola en caso de error; lo informamos a stderr
+            try {
+                process.stderr.write(`[SpectralLogger] writeQueue error: ${err?.stack || err}\n`);
+            }
+            catch (_) { }
+        });
     }
     /** Create a child logger that prefixes messages with a scope label and inherits config/plugins. */
     child(scope) {
@@ -134,9 +151,25 @@ class SpectralLogger {
     debug(message, color, codec) {
         this.writeLog(message, 'debug', color, codec);
     }
-    /** Force-flush any buffered output to stdout/stderr. */
+    /** Force-flush any buffered output to stdout/stderr (retrocompatible, no bloqueante). */
     flush() {
-        this.output.forceFlush(this.config.codec);
+        // Llamada no bloqueante: dejamos que la promesa se ejecute en background.
+        // Usamos `void` para dejar explícito que intencionalmente no esperamos el resultado.
+        // Además encadenamos un catch para evitar rejections sin manejar.
+        void this.output.forceFlush(this.config.codec).catch((err) => {
+            try {
+                // Reportamos el error al stderr para no silenciar errores de flush.
+                process.stderr.write(`[SpectralLogger] flush error: ${err?.stack || err}\n`);
+            }
+            catch (_) { }
+        });
+    }
+    /**
+      * Awaitable flush — ensures it completes before continuing.
+      * Use it in tests or during shutdown: `await logger.flushAsync()`.
+    */
+    async flushAsync() {
+        await this.output.forceFlush(this.config.codec);
     }
     /** Get the current, fully-resolved configuration. */
     getConfig() {

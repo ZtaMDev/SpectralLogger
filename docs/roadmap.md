@@ -404,9 +404,9 @@ description: SpectralLogs development roadmap and future plans
       </div>
     </div>
     <div class="timeline-item">
-      <div class="timeline-icon in-progress">
+      <div class="timeline-icon completed">
         <svg viewBox="0 0 24 24">
-          <path d="M13,13H11V7H13M13,17H11V15H13M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2Z"/>
+          <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
         </svg>
       </div>
       <div class="timeline-content">
@@ -420,8 +420,6 @@ description: SpectralLogs development roadmap and future plans
           <li>Dynamic buffer optimization</li>
           <li>Improved TypeScript definitions</li>
           <li>Better encoding support</li>
-        </ul>
-        <ul class="timeline-features planned">
           <li>Enhanced error handling and retry logic</li>
           <li>Race condition fixes</li>
         </ul>
@@ -431,9 +429,9 @@ description: SpectralLogs development roadmap and future plans
       </div>
     </div>
     <div class="timeline-item">
-      <div class="timeline-icon planned">
+      <div class="timeline-icon in-progress">
         <svg viewBox="0 0 24 24">
-          <path d="M12,2A10,10 0 0,1 22,12A10,10 0 0,1 12,22A10,10 0 0,1 2,12A10,10 0 0,1 12,2M12,4A8,8 0 0,0 4,12A8,8 0 0,0 12,20A8,8 0 0,0 20,12A8,8 0 0,0 12,4M12,6A6,6 0 0,1 18,12A6,6 0 0,1 12,18A6,6 0 0,1 6,12A6,6 0 0,1 12,6M12,8A4,4 0 0,0 8,12A4,4 0 0,0 12,16A4,4 0 0,0 16,12A4,4 0 0,0 12,8Z"/>
+          <path d="M13,13H11V7H13M13,17H11V15H13M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2Z"/>
         </svg>
       </div>
       <div class="timeline-content">
