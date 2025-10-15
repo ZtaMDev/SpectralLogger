@@ -423,8 +423,8 @@ description: SpectralLogs development roadmap and future plans
           <li>Enhanced error handling and retry logic</li>
           <li>Race condition fixes</li>
         </ul>
-        <div class="status-badge in-progress">
-          <span>•</span> In Progress
+        <div class="status-badge completed">
+          <span>✓</span> Released
         </div>
       </div>
     </div>
@@ -449,8 +449,8 @@ description: SpectralLogs development roadmap and future plans
           <li>Custom formatters and serializers</li>
           <li>Log sampling and rate limiting</li>
         </ul>
-        <div class="status-badge planned">
-          <span>○</span> Planned
+        <div class="status-badge in-progress">
+          <span>•</span> In Progress
         </div>
       </div>
     </div>
