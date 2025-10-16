@@ -45,6 +45,7 @@ jobs:
         run: |
           bun add spectrallogs@latest
 
+
       - name: Build project (TypeScript)
         shell: bash
         run: |
@@ -52,11 +53,23 @@ jobs:
             bun run tsc
           fi
 
+      - name: Run benchmark suite (original)
+        run: bun run benchmarks/benchmarks.ts
+        env:
+          NODE_ENV: production
+
       - name: Run improved benchmark suite
-        run: bun --expose-gc run benchmarks/run-multi-benchmark.ts
+        run: bun --expose-gc run benchmarks/improved-benchmarks.ts
         env:
           NODE_ENV: production
         timeout-minutes: 10
+
+      - name: Upload benchmark results (original)
+        uses: actions/upload-artifact@v4
+        with:
+          name: benchmark-results-${{ matrix.os }}
+          path: benchmarks/results/benchmark-results.json
+          retention-days: 30
 
       - name: Upload improved benchmark results
         uses: actions/upload-artifact@v4
@@ -64,7 +77,6 @@ jobs:
           name: improved-benchmark-results-${{ matrix.os }}
           path: benchmarks/results/improved-benchmark-results.json
           retention-days: 30
-      
 
   benchmark-report:
     name: Generate Benchmark Report
@@ -98,6 +110,10 @@ jobs:
       - name: Install dependencies
         run: bun install
 
+      - name: Generate benchmark report (original)
+        run: |
+          bun run scripts/generate-benchmark-report.js
+
       - name: Generate improved benchmark report
         run: |
           if [ -f benchmarks/results/improved-benchmark-results.json ]; then
@@ -109,7 +125,7 @@ jobs:
       - name: Verify report generation
         shell: bash
         run: |
-          if [ ! -f benchmarks/results/improved-benchmark-report.md ]; then
+          if [ ! -f benchmarks/results/benchmark-report.md ] && [ ! -f benchmarks/results/improved-benchmark-report.md ]; then
             echo "::warning::No benchmark reports generated, skipping."
           fi
 
@@ -121,6 +137,9 @@ jobs:
             const fs = require('fs');
             // Priorizar el reporte mejorado si existe
             let reportPath = 'benchmarks/results/improved-benchmark-report.md';
+            if (!fs.existsSync(reportPath)) {
+              reportPath = 'benchmarks/results/benchmark-report.md';
+            }
             if (!fs.existsSync(reportPath)) {
               console.log("No benchmark report found, skipping comment.");
             } else {
@@ -138,6 +157,7 @@ jobs:
         with:
           name: benchmark-reports
           path: |
+            benchmarks/results/benchmark-report.md
             benchmarks/results/improved-benchmark-report.md
           retention-days: 30
 
