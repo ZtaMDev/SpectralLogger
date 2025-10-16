@@ -416,7 +416,6 @@ description: SpectralLogs development roadmap and future plans
           Focus on performance optimizations, bug fixes, and enhanced stability for production environments.
         </p>
         <ul class="timeline-features">
-          <li>50% performance improvement over console.log</li>
           <li>Dynamic buffer optimization</li>
           <li>Improved TypeScript definitions</li>
           <li>Better encoding support</li>
