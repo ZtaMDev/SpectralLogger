@@ -126,9 +126,6 @@ jobs:
             // Priorizar el reporte mejorado si existe
             let reportPath = 'benchmarks/results/improved-benchmark-report.md';
             if (!fs.existsSync(reportPath)) {
-              reportPath = 'benchmarks/results/benchmark-report.md';
-            }
-            if (!fs.existsSync(reportPath)) {
               console.log("No benchmark report found, skipping comment.");
             } else {
               const report = fs.readFileSync(reportPath, 'utf8');
@@ -145,7 +142,6 @@ jobs:
         with:
           name: benchmark-reports
           path: |
-            benchmarks/results/benchmark-report.md
             benchmarks/results/improved-benchmark-report.md
           retention-days: 30
 
