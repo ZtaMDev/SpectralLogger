@@ -109,7 +109,7 @@ jobs:
       - name: Verify report generation
         shell: bash
         run: |
-          if [ ! -f benchmarks/results/benchmark-report.md ] && [ ! -f benchmarks/results/improved-benchmark-report.md ]; then
+          if [ ! -f benchmarks/results/improved-benchmark-report.md ]; then
             echo "::warning::No benchmark reports generated, skipping."
           fi
 
