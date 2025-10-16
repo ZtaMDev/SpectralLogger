@@ -45,7 +45,6 @@ jobs:
         run: |
           bun add spectrallogs@latest
 
-
       - name: Build project (TypeScript)
         shell: bash
         run: |
