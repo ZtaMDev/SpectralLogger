@@ -1,0 +1,42 @@
+[
+  {
+    "name": "spectrallogs - simple",
+    "totalTimeAvg": 427.0849849999995,
+    "avgTimeAvg": 0.042708498499999956,
+    "opsPerSecAvg": 24288.157734660643,
+    "memoryUsedAvg": 6131.5,
+    "runs": 20
+  },
+  {
+    "name": "console - simple",
+    "totalTimeAvg": 927.7335650000005,
+    "avgTimeAvg": 0.09277335650000006,
+    "opsPerSecAvg": 10900.189090970314,
+    "memoryUsedAvg": 35627.8,
+    "runs": 20
+  },
+  {
+    "name": "winston - simple",
+    "totalTimeAvg": 1096.6034449999993,
+    "avgTimeAvg": 0.10966034449999991,
+    "opsPerSecAvg": 9300.998379880795,
+    "memoryUsedAvg": 5908677.3,
+    "runs": 20
+  },
+  {
+    "name": "pino - simple",
+    "totalTimeAvg": 1180.3353299999985,
+    "avgTimeAvg": 0.11803353299999983,
+    "opsPerSecAvg": 9010.403661789613,
+    "memoryUsedAvg": 56295.1,
+    "runs": 20
+  },
+  {
+    "name": "log4js - simple",
+    "totalTimeAvg": 1204.3769949999992,
+    "avgTimeAvg": 0.12043769949999997,
+    "opsPerSecAvg": 8357.856053578003,
+    "memoryUsedAvg": 34546.2,
+    "runs": 20
+  }
+]

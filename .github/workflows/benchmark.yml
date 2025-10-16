@@ -52,23 +52,11 @@ jobs:
             bun run tsc
           fi
 
-      - name: Run benchmark suite (original)
-        run: bun run benchmarks/benchmarks.ts
-        env:
-          NODE_ENV: production
-
       - name: Run improved benchmark suite
-        run: bun --expose-gc run benchmarks/improved-benchmarks.ts
+        run: bun --expose-gc run benchmarks/run-multi-benchmark.ts
         env:
           NODE_ENV: production
         timeout-minutes: 10
-
-      - name: Upload benchmark results (original)
-        uses: actions/upload-artifact@v4
-        with:
-          name: benchmark-results-${{ matrix.os }}
-          path: benchmarks/results/benchmark-results.json
-          retention-days: 30
 
       - name: Upload improved benchmark results
         uses: actions/upload-artifact@v4
@@ -76,6 +64,7 @@ jobs:
           name: improved-benchmark-results-${{ matrix.os }}
           path: benchmarks/results/improved-benchmark-results.json
           retention-days: 30
+      
 
   benchmark-report:
     name: Generate Benchmark Report
