@@ -34,10 +34,15 @@ jobs:
           key: bun-${{ runner.os }}-${{ hashFiles('**/bun.lockb') }}
           restore-keys: |
             bun-${{ runner.os }}-
+      - name: Remove bun.lockb (if exists)
+        run: |
+          if [ -f bun.lockb ]; then
+            rm bun.lockb
+          fi
+        shell: bash
 
       - name: Install latest SpectralLogs clean
         run: |
-          rm -f bun.lockb
           bun add spectrallogs@latest
 
 
