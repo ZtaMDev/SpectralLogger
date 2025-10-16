@@ -98,10 +98,6 @@ jobs:
       - name: Install dependencies
         run: bun install
 
-      - name: Generate benchmark report (original)
-        run: |
-          bun run scripts/generate-benchmark-report.js
-
       - name: Generate improved benchmark report
         run: |
           if [ -f benchmarks/results/improved-benchmark-results.json ]; then
