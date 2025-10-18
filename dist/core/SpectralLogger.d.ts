@@ -1,4 +1,4 @@
-import { Plugin, SpectralConfigOptions } from '../types';
+import { LogOptions, Plugin, SpectralConfigOptions } from '../types';
 /**
  * High-performance logger for Node.js environments.
  *
@@ -12,6 +12,7 @@ export declare class SpectralLogger {
     private errorHandler;
     private plugins;
     private scope?;
+    private globalQueue;
     /**
      * Inline color helper usable in template strings.
      * Example: `spec.log(`${this.color('Title', 'warn')} details`)`
@@ -26,20 +27,18 @@ export declare class SpectralLogger {
      */
     constructor(scope?: string);
     /**
-     * Update runtime configuration (colors, timestamp/level visibility, debug mode, etc.).
-     * @param options Partial configuration to merge with current settings
+     * Prompt the user for input and return the entered string.
      */
-    configure(options: SpectralConfigOptions): void;
+    input(message: string, options?: LogOptions & {
+        default?: string;
+    }): Promise<string>;
     /**
-     * Register a plugin to execute hooks before/after each log.
-     * @param plugin Plugin implementation providing optional `init`, `beforeLog`, and `afterLog` hooks
+     * Internal method that handles all logging with strict ordering
      */
-    use(plugin: Plugin): void;
-    private executePlugins;
-    private writeQueue;
-    private writeLog;
-    /** Create a child logger that prefixes messages with a scope label and inherits config/plugins. */
-    child(scope: string): SpectralLogger;
+    private processLog;
+    /**
+     * Public logging methods - all go through the global queue
+     */
     /** Log a general message. */
     log(message: any, color?: string, codec?: BufferEncoding): void;
     /** Log an informational message. */
@@ -52,18 +51,31 @@ export declare class SpectralLogger {
     error(message: any, color?: string, codec?: BufferEncoding): void;
     /** Log a debug message (emitted only when `debugMode` is enabled). */
     debug(message: any, color?: string, codec?: BufferEncoding): void;
-    /** Force-flush any buffered output to stdout/stderr (retrocompatible, no bloqueante). */
+    /**
+     * Enqueue a log operation in the global queue
+     */
+    private enqueueLog;
+    /**
+     * Update runtime configuration (colors, timestamp/level visibility, debug mode, etc.).
+     * @param options Partial configuration to merge with current settings
+     */
+    configure(options: SpectralConfigOptions): void;
+    /**
+     * Register a plugin to execute hooks before/after each log.
+     * @param plugin Plugin implementation providing optional `init`, `beforeLog`, and `afterLog` hooks
+     */
+    use(plugin: Plugin): void;
+    private executePlugins;
+    /** Create a child logger that prefixes messages with a scope label and inherits config/plugins. */
+    child(scope: string): SpectralLogger;
     flush(): void;
     /**
-      * Awaitable flush — ensures it completes before continuing.
-      * Use it in tests or during shutdown: `await logger.flushAsync()`.
-    */
+     * Awaitable flush — ensures it completes before continuing.
+     * Use it in tests or during shutdown: `await logger.flushAsync()`.
+   */
     flushAsync(): Promise<void>;
-    /** Get the current, fully-resolved configuration. */
     getConfig(): Required<SpectralConfigOptions>;
-    /** Get the internal error cache and counters (diagnostics). */
     getErrorStats(): Map<string, import("./SpectralError").ErrorEntry>;
-    /** Clear the internal error cache. */
     clearErrorCache(): void;
 }
 //# sourceMappingURL=SpectralLogger.d.ts.map

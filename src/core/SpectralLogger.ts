@@ -4,6 +4,7 @@ import { SpectralOutput } from './SpectralOutput';
 import { SpectralFormatter } from './SpectralFormatter';
 import { SpectralError } from './SpectralError';
 import { colorize, addCustomColor } from '../utils/colors';
+import * as readline from 'readline';
 
 /**
  * High-performance logger for Node.js environments.
@@ -18,6 +19,9 @@ export class SpectralLogger {
   private errorHandler: SpectralError;
   private plugins: Plugin[] = [];
   private scope?: string;
+
+  // Single queue for all operations to maintain strict order
+  private globalQueue: Promise<void> = Promise.resolve();
 
   /**
    * Inline color helper usable in template strings.
@@ -39,7 +43,6 @@ export class SpectralLogger {
     this.errorHandler = new SpectralError(this.formatter);
     this.scope = scope;
 
-    // Bind color helper
     const colorFn = (text: string, colorNameOrCode: string) => {
       const cfg = this.config.getConfig();
       const levelMap = cfg.colors as Record<string, string>;
@@ -48,6 +51,134 @@ export class SpectralLogger {
     };
     (colorFn as any).add = (name: string, color: string) => addCustomColor(name, color);
     this.color = colorFn as any;
+  }
+
+  /**
+   * Prompt the user for input and return the entered string.
+   */
+  public async input(
+    message: string, 
+    options?: LogOptions & { default?: string }
+  ): Promise<string> {
+    // Wait for all pending operations to complete
+    await this.globalQueue;
+
+    const rl = readline.createInterface({
+      input: process.stdin,
+      output: process.stdout
+    });
+
+    const inputOptions: LogOptions = {
+      timestamp: false,
+      level: false,
+      ...options
+    };
+
+    const formattedMessage = this.formatter.format(message, 'log', inputOptions);
+
+    return new Promise((resolve) => {
+      rl.question(formattedMessage, (answer) => {
+        rl.close();
+        resolve(answer.trim() || options?.default || '');
+      });
+    });
+  }
+
+  /**
+   * Internal method that handles all logging with strict ordering
+   */
+  private async processLog(
+    message: any,
+    level: LogLevel,
+    color?: string,
+    codec?: BufferEncoding
+  ): Promise<void> {
+    // Skip debug messages if debug mode is disabled
+    if (level === 'debug' && !this.config.debugMode) {
+      return;
+    }
+
+    let messageStr: string;
+    if (message instanceof Error) {
+      messageStr = this.errorHandler.handle(message);
+    } else if (typeof message === 'object') {
+      messageStr = JSON.stringify(message, null, 2);
+    } else {
+      messageStr = String(message);
+    }
+
+    const options: LogOptions = {
+      color: color,
+      codec: codec ?? this.config.codec,
+    };
+
+    // Execute 'before' plugins
+    messageStr = this.executePlugins(messageStr, level, options, 'before');
+
+    // Prepend scope if present
+    const scopedMessage = this.scope ? `[${this.scope}] ${messageStr}` : messageStr;
+
+    // Format the message
+    const formatted = this.formatter.format(scopedMessage, level, options);
+
+    // Write to output (this is now synchronous within the queue)
+    await this.output.write(formatted, level, options.codec);
+
+    // Execute 'after' plugins
+    this.executePlugins(messageStr, level, options, 'after');
+  }
+
+  /**
+   * Public logging methods - all go through the global queue
+   */
+
+   /** Log a general message. */
+  public log(message: any, color?: string, codec?: BufferEncoding): void {
+    this.enqueueLog(message, 'log', color, codec);
+  }
+
+  /** Log an informational message. */
+  public info(message: any, color?: string, codec?: BufferEncoding): void {
+    this.enqueueLog(message, 'info', color, codec);
+  }
+
+  /** Log a success message. */
+  public success(message: any, color?: string, codec?: BufferEncoding): void {
+    this.enqueueLog(message, 'success', color, codec);
+  }
+
+   /** Log a warning message. */
+  public warn(message: any, color?: string, codec?: BufferEncoding): void {
+    this.enqueueLog(message, 'warn', color, codec);
+  }
+
+  /** Log an error. Accepts `Error` objects for rich stack formatting. */
+  public error(message: any, color?: string, codec?: BufferEncoding): void {
+    this.enqueueLog(message, 'error', color, codec);
+  }
+
+  /** Log a debug message (emitted only when `debugMode` is enabled). */
+  public debug(message: any, color?: string, codec?: BufferEncoding): void {
+    this.enqueueLog(message, 'debug', color, codec);
+  }
+
+  /**
+   * Enqueue a log operation in the global queue
+   */
+  private enqueueLog(
+    message: any,
+    level: LogLevel,
+    color?: string,
+    codec?: BufferEncoding
+  ): void {
+    this.globalQueue = this.globalQueue
+      .then(() => this.processLog(message, level, color, codec))
+      .catch(err => {
+        // Error handling without breaking the queue
+        try {
+          process.stderr.write(`[SpectralLogger] Error: ${err?.stack || err}\n`);
+        } catch (_) {}
+      });
   }
 
   /**
@@ -90,132 +221,39 @@ export class SpectralLogger {
 
     return processedMessage;
   }
-
-  private writeQueue: Promise<void> = Promise.resolve();
-  private writeLog(
-    message: any,
-    level: LogLevel,
-    color?: string,
-    codec?: BufferEncoding
-  ): void {
-    // capturamos los argumentos para la closure
-    const captured = { message, level, color, codec };
-
-    // encadenamos la tarea en la cola
-    this.writeQueue = this.writeQueue.then(async () => {
-      // Si es debug y debugMode está deshabilitado, nos salimos pronto
-      if (captured.level === 'debug' && !this.config.debugMode) {
-        return;
-      }
-
-      let messageStr: string;
-      if (captured.message instanceof Error) {
-        messageStr = this.errorHandler.handle(captured.message);
-      } else if (typeof captured.message === 'object') {
-        messageStr = JSON.stringify(captured.message, null, 2);
-      } else {
-        messageStr = String(captured.message);
-      }
-
-      const options: LogOptions = {
-        color: captured.color,
-        codec: captured.codec ?? this.config.codec,
-      };
-
-      // Ejecutar plugins 'before' (síncrono como ya tienes)
-      messageStr = this.executePlugins(messageStr, captured.level, options, 'before');
-
-      // Prepend scope if present
-      const scopedMessage = this.scope ? `[${this.scope}] ${messageStr}` : messageStr;
-
-      // Formatear (síncrono)
-      const formatted = this.formatter.format(scopedMessage, captured.level, options);
-
-      // Escribir en la capa de salida (que a su vez tiene sus propias colas)
-      this.output.write(formatted, captured.level, options.codec);
-
-      // Ejecutar plugins 'after'
-      this.executePlugins(messageStr, captured.level, options, 'after');
-    }).catch(err => {
-      // No romper la cola en caso de error; lo informamos a stderr
-      try {
-        process.stderr.write(`[SpectralLogger] writeQueue error: ${err?.stack || err}\n`);
-      } catch (_) {}
-    });
-  }
-
-
+  
   /** Create a child logger that prefixes messages with a scope label and inherits config/plugins. */
   public child(scope: string): SpectralLogger {
     const child = new SpectralLogger(scope);
-    // Inherit plugins (shallow copy reference is fine; plugins are usually stateless or singletons)
     for (const p of this.plugins) child.use(p);
     return child;
   }
 
-  /** Log a general message. */
-  public log(message: any, color?: string, codec?: BufferEncoding): void {
-    this.writeLog(message, 'log', color, codec);
-  }
-
-  /** Log an informational message. */
-  public info(message: any, color?: string, codec?: BufferEncoding): void {
-    this.writeLog(message, 'info', color, codec);
-  }
-
-  /** Log a success message. */
-  public success(message: any, color?: string, codec?: BufferEncoding): void {
-    this.writeLog(message, 'success', color, codec);
-  }
-
-  /** Log a warning message. */
-  public warn(message: any, color?: string, codec?: BufferEncoding): void {
-    this.writeLog(message, 'warn', color, codec);
-  }
-
-  /** Log an error. Accepts `Error` objects for rich stack formatting. */
-  public error(message: any, color?: string, codec?: BufferEncoding): void {
-    this.writeLog(message, 'error', color, codec);
-  }
-
-  /** Log a debug message (emitted only when `debugMode` is enabled). */
-  public debug(message: any, color?: string, codec?: BufferEncoding): void {
-    this.writeLog(message, 'debug', color, codec);
-  }
-
-  /** Force-flush any buffered output to stdout/stderr (retrocompatible, no bloqueante). */
   public flush(): void {
-    // Llamada no bloqueante: dejamos que la promesa se ejecute en background.
-    // Usamos `void` para dejar explícito que intencionalmente no esperamos el resultado.
-    // Además encadenamos un catch para evitar rejections sin manejar.
-    void this.output.forceFlush(this.config.codec).catch((err) => {
+    void this.flushAsync().catch((err) => {
       try {
-        // Reportamos el error al stderr para no silenciar errores de flush.
         process.stderr.write(`[SpectralLogger] flush error: ${err?.stack || err}\n`);
       } catch (_) {}
     });
   }
 
- /**
+  /**
    * Awaitable flush — ensures it completes before continuing.
    * Use it in tests or during shutdown: `await logger.flushAsync()`.
  */
   public async flushAsync(): Promise<void> {
+    await this.globalQueue; // Wait for all pending logs
     await this.output.forceFlush(this.config.codec);
   }
 
-
-  /** Get the current, fully-resolved configuration. */
   public getConfig(): Required<SpectralConfigOptions> {
     return this.config.getConfig();
   }
 
-  /** Get the internal error cache and counters (diagnostics). */
   public getErrorStats() {
     return this.errorHandler.getErrorStats();
   }
 
-  /** Clear the internal error cache. */
   public clearErrorCache(): void {
     this.errorHandler.clearCache();
   }

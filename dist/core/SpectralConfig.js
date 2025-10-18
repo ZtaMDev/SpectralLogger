@@ -76,7 +76,7 @@ class SpectralConfig {
         this.showLevel = true;
         this.debugMode = false;
         this.timeFormat = 'iso';
-        this.bufferWrites = undefined;
+        this.bufferWrites = false;
         this.asyncStacks = false;
         this.colors = {
             info: '#00bfff',

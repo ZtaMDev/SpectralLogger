@@ -4,111 +4,73 @@ exports.SpectralOutput = void 0;
 const CACHED_NODE_ENV = process.env.NODE_ENV;
 const IS_TEST_ENV = CACHED_NODE_ENV === 'test';
 /**
- * Thread-safe SpectralOutput.
- * - Colas separadas por stream (stdout / stderr)
- * - Buffers con flush adaptativo
- * - safeWrite que espera el callback del stream
- * - forceFlush awaitable
- * - Manejo de errores aislado (no rompe la cola)
+ * SpectralOutput simplificado y sincronizado
  */
 class SpectralOutput {
-    stdoutQueue = Promise.resolve();
-    stderrQueue = Promise.resolve();
-    stdoutBuffer = [];
-    stderrBuffer = [];
-    bufferSize = 10;
-    flushTimer = null;
-    isFlushing = false;
     config;
+    pendingWrites = Promise.resolve();
+    writeLock = Promise.resolve();
     constructor(config) {
         this.config = config;
-        // Aseguramos flush final al salir del proceso para no perder logs.
         if (!IS_TEST_ENV) {
-            process.once('beforeExit', () => {
-                // fire-and-forget: no queremos bloquear shutdown excesivamente,
-                // pero intentaremos vaciar buffers sin lanzar errores.
-                this.forceFlush().catch(() => { });
+            process.once('beforeExit', async () => {
+                await this.forceFlush().catch(() => { });
             });
         }
     }
-    /** Encola el mensaje en la secuencia segura según el nivel. */
-    write(message, level, codec = 'utf-8') {
+    /**
+     * Escritura sincronizada que mantiene el orden estricto
+     */
+    async write(message, level, codec = 'utf-8') {
         const stream = level === 'error' || level === 'warn' ? process.stderr : process.stdout;
-        const queueKey = stream === process.stderr ? 'stderrQueue' : 'stdoutQueue';
-        const bufferKey = stream === process.stderr ? 'stderrBuffer' : 'stdoutBuffer';
         const finalMessage = message.endsWith('\n') ? message : `${message}\n`;
-        // Encadenar operaciones en la cola correspondiente
-        this[queueKey] = this[queueKey]
-            .then(async () => {
-            try {
-                if (this.shouldBuffer()) {
-                    this[bufferKey].push(finalMessage);
-                    // si el buffer está lleno hacemos flush inmediatamente
-                    if (this[bufferKey].length >= this.bufferSize) {
-                        await this.flushStream(stream, codec, bufferKey);
-                    }
-                    else {
-                        this.scheduleFlush(stream, codec, bufferKey);
-                    }
-                }
-                else {
-                    await this.safeWrite(stream, finalMessage, codec);
-                }
+        // Usamos un lock para garantizar orden estricto
+        this.pendingWrites = this.pendingWrites.then(async () => {
+            await this.writeLock;
+            if (this.shouldBuffer()) {
+                // Buffering mínimo con flush inmediato para mantener orden
+                await this.bufferedWrite(stream, finalMessage, codec);
             }
-            catch (err) {
-                // No romper la cola; escribir error al stderr de forma síncrona segura
-                try {
-                    process.stderr.write(`[SpectralOutput] write error: ${err?.stack || err}\n`);
-                }
-                catch (_) {
-                    // swallow
-                }
+            else {
+                await this.directWrite(stream, finalMessage, codec);
             }
-        })
-            .catch((err) => {
-            // Nunca dejar que una excepción rompa la cadena de promesas.
-            try {
-                process.stderr.write(`[SpectralOutput] queue error: ${err?.stack || err}\n`);
-            }
-            catch (_) { }
         });
+        return this.pendingWrites;
     }
     shouldBuffer() {
         return !!this.config.getConfig().bufferWrites;
     }
-    scheduleFlush(stream, codec, bufferKey) {
-        if (this.flushTimer)
-            return;
-        const size = this[bufferKey].length || 0;
-        const delay = this.adaptiveDelay(size);
-        this.flushTimer = setTimeout(() => {
-            // Programamos el flush en la cola correspondiente
-            const queueKey = stream === process.stderr ? 'stderrQueue' : 'stdoutQueue';
-            this[queueKey] = this[queueKey].then(() => this.safeFlushQueue(stream, codec, bufferKey));
-        }, delay);
-    }
-    adaptiveDelay(size) {
-        if (size >= this.bufferSize)
-            return 1;
-        if (size > this.bufferSize * 0.6)
-            return 3;
-        if (size > this.bufferSize * 0.3)
-            return 6;
-        return 10;
-    }
-    async safeWrite(stream, data, codec) {
+    async bufferedWrite(stream, data, codec) {
         return new Promise((resolve, reject) => {
-            // stream.write acepta callback con (err?) en algunos entornos; lo manejamos
+            const ok = stream.write(data, codec, (err) => {
+                if (err)
+                    reject(err);
+                else
+                    resolve();
+            });
+            if (!ok) {
+                stream.once('drain', () => resolve());
+            }
+            else if (ok === undefined) {
+                // Para streams que no llaman el callback
+                setImmediate(resolve);
+            }
+        });
+    }
+    async directWrite(stream, data, codec) {
+        return new Promise((resolve, reject) => {
             try {
                 const ok = stream.write(data, codec, (err) => {
                     if (err)
-                        return reject(err);
-                    resolve();
+                        reject(err);
+                    else
+                        resolve();
                 });
-                // En caso de que write no invoque callback (rare), resolvemos igual
-                // cuando write devolvió true/false no indica fallo.
-                if (ok === undefined) {
-                    // no-op
+                if (!ok) {
+                    stream.once('drain', () => resolve());
+                }
+                else if (ok === undefined) {
+                    setImmediate(resolve);
                 }
             }
             catch (err) {
@@ -116,50 +78,27 @@ class SpectralOutput {
             }
         });
     }
-    async safeFlushQueue(stream, codec, bufferKey) {
-        if (this.isFlushing)
-            return;
-        this.isFlushing = true;
-        try {
-            await this.flushStream(stream, codec, bufferKey);
-        }
-        catch (err) {
-            try {
-                process.stderr.write(`[SpectralOutput] flush error: ${err?.stack || err}\n`);
-            }
-            catch (_) { }
-        }
-        finally {
-            this.isFlushing = false;
-            if (this.flushTimer) {
-                clearTimeout(this.flushTimer);
-                this.flushTimer = null;
-            }
-        }
-    }
-    /** Volcado controlado del buffer actual (stream específico). */
-    async flushStream(stream, codec, bufferKey) {
-        const buffer = this[bufferKey];
-        if (!buffer || buffer.length === 0)
-            return;
-        const content = buffer.join('');
-        this[bufferKey] = [];
-        await this.safeWrite(stream, content, codec);
-    }
-    /** Fuerza un flush inmediato y espera a que las colas terminen */
+    /** Fuerza flush esperando a todas las escrituras pendientes */
     async forceFlush(codec = 'utf-8') {
-        // Esperar a que todas las colas se vacíen
-        await Promise.all([this.stdoutQueue, this.stderrQueue].map(p => p.catch(() => { })));
-        // Limpiar timers
-        if (this.flushTimer) {
-            clearTimeout(this.flushTimer);
-            this.flushTimer = null;
-        }
-        // Volcar ambos buffers si tienen contenido
-        await Promise.all([
-            this.flushStream(process.stdout, codec, 'stdoutBuffer').catch(() => { }),
-            this.flushStream(process.stderr, codec, 'stderrBuffer').catch(() => { }),
-        ]);
+        // Esperar a que todas las escrituras pendientes terminen
+        await this.pendingWrites;
+        // Forzar drain de ambos streams
+        await new Promise((resolve) => {
+            if (process.stdout.writableNeedDrain || process.stderr.writableNeedDrain) {
+                const checkDrain = () => {
+                    if (!process.stdout.writableNeedDrain && !process.stderr.writableNeedDrain) {
+                        resolve();
+                    }
+                    else {
+                        setImmediate(checkDrain);
+                    }
+                };
+                checkDrain();
+            }
+            else {
+                resolve();
+            }
+        });
     }
 }
 exports.SpectralOutput = SpectralOutput;

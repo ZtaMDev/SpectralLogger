@@ -36,20 +36,16 @@ export default defineConfig({
     logo: '/logo.png',
     nav: [
       { text: 'Roadmap', link: '/roadmap' },
-      { text: 'Getting Started', link: '/getting-started' },
-      { text: 'Configuration', link: '/configuration' },
-      { text: 'Colors', link: '/colors' },
-      { text: 'Node', link: '/node' },
-      { text: 'Web', link: '/web' },
-      { text: 'Plugins', link: '/plugins' },
-      { text: 'API', link: '/api' },
-      { text: 'How it works', link: '/how-it-works' },
+      { text: 'Documentation', link: '/getting-started' },
+      { text: 'Releases', link: 'https://github.com/ZtaMDev/SpectralLogs/releases' },
+      { text: 'Github', link: 'https://github.com/ZtaMDev/SpectralLogs' },
     ],
     sidebar: [
       {
         text: 'Guide',
         items: [
           { text: 'Getting Started', link: '/getting-started' },
+          { text: 'Logger Functions', link: '/log-methods' },
           { text: 'Configuration', link: '/configuration' },
           { text: 'Node', link: '/node' },
           { text: 'Web', link: '/web' },
