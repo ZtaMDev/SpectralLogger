@@ -40,6 +40,37 @@ features:
   - icon: { src: /icons/universal.svg }
     title: Universal
     details: Node, Bun, Deno, and Web. Use 'spectrallogs' on server runtimes and 'spectrallogs/web' in browsers or via CDN (esm.sh).
+
+---
+
+<div style="text-align:center; margin-top: 2rem;">
+  <h2>How it Works</h2>
+  <p style="font-size: 1.1rem; color: var(--vp-c-text-2);">
+    Watch this short video to understand how Spectral Logs works in action:
+  </p>
+  <div style="
+      position: relative;
+      display: inline-block;
+      width: 80%;
+      max-width: 800px;
+      padding-bottom: 45%;
+      height: 0;
+      overflow: hidden;
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+      margin-top: 1rem;
+    ">
+    <iframe
+      src="https://www.youtube.com/embed/27RPq6LGiDU?start=85"
+      title="Spectral Logs Tutorial"
+      frameborder="0"
+      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+      allowfullscreen
+      style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none;"
+    ></iframe>
+  </div>
+</div>
+
 ---
 
 ## Performance Comparison (Using Bun)

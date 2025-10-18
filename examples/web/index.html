@@ -35,7 +35,7 @@
 
       // Recreate logger with DOM sink batching
       // @ts-ignore - access constructor via named export
-      //import { SpectralLoggerWeb } from 'https://esm.sh/spectrallogs/web';
+      import spec, { SpectralLoggerWeb } from 'https://esm.sh/spectrallogs/web';
       const domLogger = new SpectralLoggerWeb({ batching: true, sink });
 
       document.getElementById('btn-log').addEventListener('click', () => {
