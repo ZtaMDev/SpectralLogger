@@ -421,7 +421,7 @@ description: SpectralLogs development roadmap and future plans
           <li>Better encoding support</li>
           <li>Enhanced error handling and retry logic</li>
           <li>Race condition fixes</li>
-          <li>VS Code extension with snippets and playground</li>
+          <li>VS Code extension with snippets, playground and config generator</li>
         </ul>
         <div class="status-badge completed">
           <span>✓</span> Released
