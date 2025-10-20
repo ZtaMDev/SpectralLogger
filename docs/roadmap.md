@@ -421,6 +421,7 @@ description: SpectralLogs development roadmap and future plans
           <li>Better encoding support</li>
           <li>Enhanced error handling and retry logic</li>
           <li>Race condition fixes</li>
+          <li>VS Code extension with snippets and playground</li>
         </ul>
         <div class="status-badge completed">
           <span>✓</span> Released
@@ -491,7 +492,6 @@ description: SpectralLogs development roadmap and future plans
         <ul class="timeline-features planned">
           <li>Real-time log analysis dashboard</li>
           <li>Advanced CLI with live monitoring</li>
-          <li>VS Code extension with IntelliSense</li>
           <li>Automated migration tools</li>
           <li>Performance profiler and recommendations</li>
         </ul>
