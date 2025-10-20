@@ -20,7 +20,7 @@ VS Code [Extension](https://marketplace.visualstudio.com/items?itemName=ZtaMDev.
 
 - **Lightning Fast** - Optimized stdout writing with internal buffering
 - **Rich Colors** - Full support for HEX, RGB, and named colors with automatic terminal detection
-- **VS Code** [Extension](https://marketplace.visualstudio.com/items?itemName=ZtaMDev.vs-spectrallogs) with snippets and playground.
+- **VS Code** [Extension](https://marketplace.visualstudio.com/items?itemName=ZtaMDev.vs-spectrallogs) with snippets, playground and configuration generator.
 - **TypeScript First** - Complete type safety and IntelliSense support
 - **Smart Error Handling** - Automatic error tracking, stack trace cleaning, and duplicate detection
 - **Plugin System** - Extensible architecture for custom functionality
