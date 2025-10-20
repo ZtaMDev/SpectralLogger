@@ -10,7 +10,8 @@ Spectral is a high-performance, zero-dependency logging library designed to repl
 
 Official [Website](https://ztamdev.github.io/SpectralLogs) | 
 Documentation [Docs](https://ztamdev.github.io/SpectralLogs/getting-started.html) | 
-Roadmap [Roadmap](https://ztamdev.github.io/SpectralLogs/roadmap.html)
+Roadmap [Roadmap](https://ztamdev.github.io/SpectralLogs/roadmap.html) |
+VS Code [Extension](https://marketplace.visualstudio.com/items?itemName=ZtaMDev.vs-spectrallogs)
 
 </div>
 
@@ -19,6 +20,7 @@ Roadmap [Roadmap](https://ztamdev.github.io/SpectralLogs/roadmap.html)
 
 - **Lightning Fast** - Optimized stdout writing with internal buffering
 - **Rich Colors** - Full support for HEX, RGB, and named colors with automatic terminal detection
+- **VS Code** [Extension](https://marketplace.visualstudio.com/items?itemName=ZtaMDev.vs-spectrallogs) with snippets and playground.
 - **TypeScript First** - Complete type safety and IntelliSense support
 - **Smart Error Handling** - Automatic error tracking, stack trace cleaning, and duplicate detection
 - **Plugin System** - Extensible architecture for custom functionality
