@@ -6,7 +6,7 @@
 
 * **JSON Logging Support**: New `FileLoggerPlugin` with JSON format output, log rotation, and structured context tracking
 * **Enhanced FileLoggerPlugin**: Complete rewrite with support for multiple instances, child loggers, and advanced configuration
-* **Structured Logging**: Rich JSON log entries with timestamps, levels, context, scope, and metadata
+* **Structured Logging**: Rich JSON log entries with timestamps, levels, scope, and metadata
 * **Log Rotation**: Automatic file rotation when logs exceed configurable size limits
 * **Child Logger Integration**: Proper plugin support for child loggers with scope inheritance
 * **Comprehensive Documentation**: Complete JSON logging guide with examples and best practices
@@ -14,8 +14,7 @@
 ### Enhanced
 
 * **Plugin System**: Improved plugin architecture supporting multiple instances and proper child logger isolation
-* **FileLoggerPlugin Performance**: Optimized file writing with proper stream management and error handling
-* **Context Tracking**: Enhanced context propagation through child logger hierarchy
+* **FileLoggerPlugin Performance**: Optimized file writing with proper stream management
 * **TypeScript Definitions**: Updated types with proper LoggerContext and plugin interfaces
 
 ### Fixed
@@ -101,8 +100,8 @@ spec.use(new FileLoggerPlugin({
   format: 'json'
 }));
 
-// Log with context - automatically captured in JSON
-spec.info("User logged in", { userId: "123", action: "login" });
+// Log
+spec.info("User logged in");
 ```
 
 Produces structured JSON output:
@@ -110,11 +109,7 @@ Produces structured JSON output:
 {
   "timestamp": "2024-01-15T10:30:00.000Z",
   "level": "info",
-  "message": "User logged in",
-  "context": {
-    "userId": "123",
-    "action": "login"
-  }
+  "message": "User"
 }
 ```
 
@@ -176,8 +171,6 @@ Complete JSON logging documentation is available in the updated docs, covering:
 - Advanced usage patterns
 - Child logger integration
 - Log rotation management
-- Best practices for structured logging
-- Integration with log analysis tools (ELK stack, CloudWatch, Datadog)
 
 ### Performance
 
