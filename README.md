@@ -21,7 +21,7 @@ VS Code [Extension](https://marketplace.visualstudio.com/items?itemName=ZtaMDev.
 
 - **Lightning Fast** - Optimized stdout writing with internal buffering
 - **Rich Colors** - Full support for HEX, RGB, and named colors with automatic terminal detection
-- **JSON Logging** - Structured JSON output with file rotation and context tracking
+- **JSON Logging** - Structured JSON output with file rotation and scopes with the FileLoggerPlugin
 - **VS Code** [Extension](https://marketplace.visualstudio.com/items?itemName=ZtaMDev.vs-spectrallogs) with snippets, playground and configuration generator.
 - **TypeScript First** - Complete type safety and IntelliSense support
 - **Smart Error Handling** - Automatic error tracking, stack trace cleaning, and duplicate detection
@@ -215,9 +215,7 @@ const fileLogger = new FileLoggerPlugin({
 });
 
 spec.use(fileLogger);
-
-// JSON logging with context
-spec.info('User logged in', { userId: "123", action: "login" });
+spec.info('User logged in');
 ```
 
 #### JSON Logging Features
@@ -227,7 +225,6 @@ spec.info('User logged in', { userId: "123", action: "login" });
 spec.use(new FileLoggerPlugin({
   filePath: './logs/application.log',
   format: 'json', // Output as structured JSON
-  includeContext: true, // Automatically include log context
   handleScope: true, // Include child logger scope information
 }));
 
@@ -252,7 +249,7 @@ apiLogger.use(new FileLoggerPlugin({
   format: 'json'
 }));
 
-apiLogger.info('API request', { method: 'GET', endpoint: '/users' });
+apiLogger.info('API request');
 ```
 
 Produces structured JSON output:
@@ -262,11 +259,7 @@ Produces structured JSON output:
   "timestamp": "2024-01-15T10:30:00.000Z",
   "level": "info", 
   "message": "User logged in",
-  "scope": "api",
-  "context": {
-    "userId": "123",
-    "action": "login"
-  }
+  "scope": "api"
 }
 ```
 
@@ -278,7 +271,6 @@ interface FileLoggerOptions {
   maxSize?: number;           // Max file size before rotation (default: 10MB)
   rotate?: boolean;           // Enable log rotation (default: true)
   format?: 'json' | 'text';   // Output format (default: 'json')
-  includeContext?: boolean;   // Include context in logs (default: true)
   handleScope?: boolean;      // Include logger scope (default: true)
 }
 ```
@@ -286,7 +278,6 @@ interface FileLoggerOptions {
 #### Key Features:
 - **Structured JSON**: Rich, queryable log data
 - **Automatic Rotation**: Prevents log files from growing too large
-- **Context Tracking**: Automatically captures log context and metadata
 - **Child Logger Support**: Proper scope inheritance and isolation
 - **Multiple Instances**: Run multiple file loggers simultaneously
 - **Performance Optimized**: Efficient streaming with minimal overhead
