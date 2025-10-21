@@ -1,6 +1,6 @@
 # JSON Logging
 
-SpectralLogs provides powerful JSON logging capabilities through the `FileLoggerPlugin`, allowing you to store structured logs in JSON format with advanced features like log rotation, context tracking, and child logger support.
+SpectralLogs provides powerful JSON logging capabilities through the `FileLoggerPlugin`, allowing you to store structured logs in JSON format with advanced features like log rotation, and child logger support.
 
 ## Basic Usage
 
@@ -13,12 +13,12 @@ spec.use(new FileLoggerPlugin({
   format: 'json'
 }));
 
-spec.info("User logged in", { userId: "123", action: "login" });
+spec.info("User logged in");
 ```
 
 This will produce structured JSON logs:
 ```json
-{"timestamp":"2024-01-15T10:30:00.000Z","level":"info","message":"User logged in","context":{"userId":"123","action":"login"}}
+{"timestamp":"2024-01-15T10:30:00.000Z","level":"info","message":"User logged in"}
 ```
 
 ## Configuration Options
