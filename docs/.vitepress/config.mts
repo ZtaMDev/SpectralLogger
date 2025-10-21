@@ -37,8 +37,8 @@ export default defineConfig({
     nav: [
       { text: 'Roadmap', link: '/roadmap' },
       { text: 'Documentation', link: '/getting-started' },
-      { text: 'Extension', link: 'https://marketplace.visualstudio.com/items?itemName=ZtaMDev.vs-spectrallogs' },
-      { text: 'Releases', link: 'https://github.com/ZtaMDev/SpectralLogs/releases' },
+      { text: 'Releases', link: '/releases' },
+      { text: 'Extension', link: 'https://marketplace.visualstudio.com/items?itemName=ZtaMDev.vs-spectrallogs' }, 
       { text: 'Github', link: 'https://github.com/ZtaMDev/SpectralLogs' },
     ],
     sidebar: [
@@ -60,6 +60,7 @@ export default defineConfig({
       {
         text: 'Project',
         items: [
+          { text: 'Releases', link: '/releases' },
           { text: 'Roadmap', link: '/roadmap' },
         ]
       }
