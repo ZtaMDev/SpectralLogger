@@ -1,0 +1,53 @@
+{
+  "name": "vs-spectrallogs",
+  "displayName": "SpectralLogs",
+  "version": "0.1.0",
+  "icon": "logo.png",
+  "description": "The official VS Code extension for SpectralLogs the fast and easy to use logger for node / bun / deno and web.",
+  "publisher": "ZtaMDev",
+  "repository": { "GitHub": "https://github.com/ZtaMDev/SpectralLogs" },
+  "engines": {
+    "vscode": "^1.82.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [
+    "onLanguage:javascript",
+    "onLanguage:typescript"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "snippets": [
+      {
+        "language": "javascript",
+        "path": "./snippets/spectrallogs.json"
+      },
+      {
+        "language": "typescript",
+        "path": "./snippets/spectrallogs.json"
+      }
+    ],
+    "commands": [
+      {
+        "command": "spectrallogs.insertConfigInteractive",
+        "title": "SpectralLogs: Create default config"
+      },
+      {
+        "command": "spectrallogs.openPlayground",
+        "title": "Open Spectral Logs Playground"
+      }
+    ]
+
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "bunx tsc -p ."
+  },
+  "devDependencies": {
+    "@types/node": "^24.8.1",
+    "@types/vscode": "^1.82.0",
+    "typescript": "^5.1.6",
+    "vscode": "1.1.37"
+  }
+}

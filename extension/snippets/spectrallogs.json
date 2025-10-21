@@ -1,0 +1,41 @@
+{
+    "spec.info": {
+        "scope": "javascript,typescript",
+        "prefix": "spec.info",
+        "body": ["spec.info($1);"],
+        "description": "spec.info(message, color?)"
+    },
+    "spec.success": {
+        "scope": "javascript,typescript",
+        "prefix": "spec.success",
+        "body": ["spec.success($1);"],
+        "description": "spec.success(message, color?)"
+    },
+    "spec.warn": {
+        "scope": "javascript,typescript",
+        "prefix": "spec.warn",
+        "body": ["spec.warn($1);"],
+        "description": "spec.warn(message, color?)"
+    },
+    "spec.error": {
+        "prefix": "spec.error",
+        "body": ["spec.error($1);"],
+        "description": "spec.error(message, color?)"
+    },
+    "spec.debug": {
+        "prefix": "spec.debug",
+        "body": ["spec.debug($1);"],
+        "description": "spec.debug(message, color?)"
+    },
+    "spec.input": {
+        "prefix": "spec.input",
+        "body": ["const ${1:name} = await spec.input('$1');"],
+        "description": "spec.input(message, color?)"
+    },
+    "spec.child": {
+        "prefix": "spec.child",
+        "body": ["const ${1:name} = spec.child('${2:Scope}');", "${1}.info('$3');"],
+        "description": "Create child logger"
+    }
+
+}

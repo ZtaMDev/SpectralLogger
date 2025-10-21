@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Spectral Logs Playground</title>
+  <style>
+    :root {
+      --bg: #1e1e1e;
+      --console-bg: #111;
+      --border: #333;
+      --accent: #00bfff;
+      --text: #ddd;
+      --input-bg: #252526;
+      --success: #3fe08a;
+      --error: #ff5c5c;
+      --font: Consolas, "Courier New", monospace;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font);
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+    }
+
+    header {
+      padding: 10px 16px;
+      border-bottom: 1px solid var(--border);
+      background: #161616;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    header h2 {
+      margin: 0;
+      color: var(--accent);
+      font-size: 16px;
+    }
+
+    #options {
+      font-size: 13px;
+      color: #aaa;
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+
+    #logOutput {
+      flex: 1;
+      background: var(--console-bg);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 8px 10px;
+      overflow-y: auto;
+      font-size: 13px;
+      line-height: 1.4em;
+      white-space: pre-wrap;
+      scroll-behavior: smooth;
+    }
+
+    #inputArea {
+      display: flex;
+      align-items: flex-start;
+      margin-top: 8px;
+      border-top: 1px solid var(--border);
+      padding-top: 8px;
+    }
+
+    #prompt {
+      color: var(--accent);
+      margin-right: 6px;
+      user-select: none;
+    }
+
+    textarea {
+      flex: 1;
+      resize: none;
+      background: var(--input-bg);
+      border: 1px solid var(--border);
+      color: var(--text);
+      border-radius: 4px;
+      padding: 6px 8px;
+      font-family: var(--font);
+      font-size: 13px;
+      min-height: 28px;
+      max-height: 200px;
+      line-height: 1.4em;
+      transition: all 0.15s ease;
+    }
+
+    textarea:focus {
+      outline: 1px solid var(--accent);
+    }
+
+    button {
+      margin-left: 8px;
+      padding: 6px 14px;
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 13px;
+      transition: background 0.2s;
+    }
+
+    button:hover {
+      background: #0095ff;
+    }
+
+    .log-entry {
+      margin: 2px 0;
+    }
+
+    .fade-in {
+      animation: fadeIn 0.2s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(2px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: #444;
+      border-radius: 4px;
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <h2>Spectral Logs Playground</h2>
+    <div id="options">
+      <label>
+        <input type="checkbox" id="multiToggle" /> Multiline Input
+      </label>
+      <button id="clearBtn">Clear</button>
+    </div>
+  </header>
+
+  <main>
+    <div id="logOutput"></div>
+    <div id="inputArea">
+      <span id="prompt">&gt;</span>
+      <textarea id="code" placeholder='Try: spec.info("Hello world!")'></textarea>
+      <button id="runBtn">Run</button>
+    </div>
+  </main>
+
+  <script type="module">
+    import spec from "https://esm.sh/spectrallogs/web";
+
+    const vscode = acquireVsCodeApi();
+    const runBtn = document.getElementById("runBtn");
+    const clearBtn = document.getElementById("clearBtn");
+    const output = document.getElementById("logOutput");
+    const textarea = document.getElementById("code");
+    const toggle = document.getElementById("multiToggle");
+
+    // --- Console Renderer ---
+    function renderStyledLog(format, ...styles) {
+      const parts = format.split("%c");
+      let html = "";
+      for (let i = 0; i < parts.length; i++) {
+        const text = parts[i];
+        const style = styles[i - 1] || "";
+        html += `<span style="${style}">${text}</span>`;
+      }
+      const line = document.createElement("div");
+      line.className = "log-entry fade-in";
+      line.innerHTML = html;
+      output.appendChild(line);
+      output.scrollTop = output.scrollHeight;
+    }
+
+    const originalLog = console.log;
+    console.log = (...args) => {
+      originalLog(...args);
+      if(args.length>1 && typeof args[0]==="string" && args[0].includes("%c")){
+        renderStyledLog(...args);
+      } else {
+        const line = document.createElement("div");
+        line.className = "log-entry fade-in";
+        line.textContent = args.join(" ");
+        output.appendChild(line);
+        output.scrollTop = output.scrollHeight;
+      }
+    };
+
+    // --- Run code safely ---
+    runBtn.addEventListener("click", async () => {
+      const code = textarea.value.trim();
+      if(!code) return;
+      try{
+        const blob = new Blob([`import spec from "https://esm.sh/spectrallogs/web"; (async()=>{ ${code} })();`], {type:"application/javascript"});
+        await import(URL.createObjectURL(blob));
+      }catch(err){
+        renderStyledLog(`%cError: ${err.message}`, "color:red;");
+      }
+    });
+
+    // Clear console
+    clearBtn.addEventListener("click", ()=>{
+      output.innerHTML = "";
+      vscode.postMessage({command:"clearedFromWebview"});
+      spec.success("Spectral Logs Playground ready");
+    });
+
+    // Single/multiline toggle
+    toggle.addEventListener("change", ()=>{
+      textarea.style.height = toggle.checked?"100px":"28px";
+    });
+
+    // Enter to run if multiline off
+    textarea.addEventListener("keydown",(e)=>{
+      if(!toggle.checked && e.key==="Enter"){
+        e.preventDefault(); runBtn.click();
+      }
+    });
+
+    // Welcome messages
+    spec.success("Spectral Logs Playground ready");
+    spec.info('Try: spec.log("Hello world!", "cyan")');
+
+    textarea.focus();
+  </script>
+</body>
+</html>
