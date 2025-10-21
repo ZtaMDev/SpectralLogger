@@ -5,6 +5,7 @@ import { SpectralFormatter } from './SpectralFormatter';
 import { SpectralError } from './SpectralError';
 import { colorize, addCustomColor } from '../utils/colors';
 import * as readline from 'readline';
+import { FileLoggerPlugin } from '../plugins/FileLogger';
 
 /**
  * High-performance logger for Node.js environments.
@@ -193,11 +194,38 @@ export class SpectralLogger {
    * Register a plugin to execute hooks before/after each log.
    * @param plugin Plugin implementation providing optional `init`, `beforeLog`, and `afterLog` hooks
    */
-  public use(plugin: Plugin): void {
-    this.plugins.push(plugin);
+   public use(plugin: Plugin): void {
+    // Verificar si ya existe un plugin con el mismo nombre
+    const existingIndex = this.plugins.findIndex(p => p.name === plugin.name);
+    
+    if (existingIndex >= 0) {
+      // Reemplazar el plugin existente
+      this.plugins[existingIndex] = plugin;
+    } else {
+      // Agregar nuevo plugin
+      this.plugins.push(plugin);
+    }
+    
     if (plugin.init) {
       plugin.init(this);
     }
+  }
+
+  /**
+   * Remove a plugin by name
+   */
+  public removePlugin(pluginName: string): void {
+    const index = this.plugins.findIndex(p => p.name === pluginName);
+    if (index >= 0) {
+      this.plugins.splice(index, 1);
+    }
+  }
+
+  /**
+   * Get all current plugins
+   */
+  public getPlugins(): Plugin[] {
+    return [...this.plugins];
   }
 
   private executePlugins(
@@ -222,10 +250,27 @@ export class SpectralLogger {
     return processedMessage;
   }
   
-  /** Create a child logger that prefixes messages with a scope label and inherits config/plugins. */
-  public child(scope: string): SpectralLogger {
+  /** 
+   * Create a child logger that prefixes messages with a scope label.
+   * Por defecto NO hereda los plugins del parent.
+   */
+  public child(scope: string, inheritPlugins: boolean = false): SpectralLogger {
     const child = new SpectralLogger(scope);
-    for (const p of this.plugins) child.use(p);
+    
+    if (inheritPlugins) {
+      // Solo copiar los plugins si se solicita explícitamente
+      for (const plugin of this.plugins) {
+        // Para FileLoggerPlugin, crear una instancia específica para el child
+        if (plugin instanceof FileLoggerPlugin) {
+          const fileLoggerPlugin = plugin as FileLoggerPlugin;
+          child.use(fileLoggerPlugin.createForChild(scope));
+        } else {
+          // Para otros plugins, copiar la referencia (puede necesitar ajustes según el plugin)
+          child.use(plugin);
+        }
+      }
+    }
+    
     return child;
   }
 

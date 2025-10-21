@@ -48,6 +48,7 @@ export default defineConfig({
           { text: 'Getting Started', link: '/getting-started' },
           { text: 'Logger Functions', link: '/log-methods' },
           { text: 'Configuration', link: '/configuration' },
+          { text: 'JSON Logging', link: '/json-logging' },
           { text: 'Node', link: '/node' },
           { text: 'Web', link: '/web' },
           { text: 'Colors', link: '/colors' },

@@ -18,14 +18,28 @@ interface Plugin {
 
 ## Node Plugins
 
-- `FileLoggerPlugin`: appends entries to a file, with optional rotation.
+- `FileLoggerPlugin`: appends entries to a file, with optional rotation and JSON/text formatting.
 - `PerformanceTrackerPlugin`: measures time per log using `perf_hooks`.
 
 ```ts
 import spec, { FileLoggerPlugin, PerformanceTrackerPlugin } from 'spectrallogs';
 
-spec.use(new FileLoggerPlugin({ filePath: '.spectral/logs.txt' }));
-spec.use(new PerformanceTrackerPlugin());
+// Basic file logging
+spec.use(new FileLoggerPlugin({ filePath: '.spectral/logs.log' }));
+
+// JSON format with rotation
+spec.use(new FileLoggerPlugin({
+  filePath: './logs/application.log',
+  format: 'json',
+  maxSize: 10 * 1024 * 1024, // 10MB
+  rotate: true
+}));
+
+// Multiple file loggers
+const generalLogger = new FileLoggerPlugin({ filePath: './logs/general.log' });
+const errorLogger = new FileLoggerPlugin({ filePath: './logs/errors.log' });
+spec.use(generalLogger);
+spec.use(errorLogger);
 ```
 
 ## Web Plugins

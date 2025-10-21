@@ -18,8 +18,10 @@ VS Code [Extension](https://marketplace.visualstudio.com/items?itemName=ZtaMDev.
 
 ## Features
 
+
 - **Lightning Fast** - Optimized stdout writing with internal buffering
 - **Rich Colors** - Full support for HEX, RGB, and named colors with automatic terminal detection
+- **JSON Logging** - Structured JSON output with file rotation and context tracking
 - **VS Code** [Extension](https://marketplace.visualstudio.com/items?itemName=ZtaMDev.vs-spectrallogs) with snippets, playground and configuration generator.
 - **TypeScript First** - Complete type safety and IntelliSense support
 - **Smart Error Handling** - Automatic error tracking, stack trace cleaning, and duplicate detection
@@ -200,11 +202,12 @@ Spectral includes a powerful plugin system for extending functionality.
 
 ### FileLogger Plugin
 
-Save logs to files with automatic rotation:
+Save logs to files with automatic rotation and structured JSON formatting:
 
 ```typescript
 import spec, { FileLoggerPlugin } from 'spectrallogs';
 
+// Basic file logging
 const fileLogger = new FileLoggerPlugin({
   filePath: './logs/app.log',
   maxSize: 10 * 1024 * 1024, // 10MB
@@ -213,8 +216,80 @@ const fileLogger = new FileLoggerPlugin({
 
 spec.use(fileLogger);
 
-spec.info('This will be logged to console AND file');
+// JSON logging with context
+spec.info('User logged in', { userId: "123", action: "login" });
 ```
+
+#### JSON Logging Features
+
+```typescript
+// Structured JSON logging
+spec.use(new FileLoggerPlugin({
+  filePath: './logs/application.log',
+  format: 'json', // Output as structured JSON
+  includeContext: true, // Automatically include log context
+  handleScope: true, // Include child logger scope information
+}));
+
+// Multiple log files for different purposes
+const generalLogger = new FileLoggerPlugin({
+  filePath: './logs/general.log',
+  format: 'json'
+});
+
+const errorLogger = new FileLoggerPlugin({
+  filePath: './logs/errors.log', 
+  format: 'json'
+});
+
+spec.use(generalLogger);
+spec.use(errorLogger);
+
+// Child logger integration
+const apiLogger = spec.child('api');
+apiLogger.use(new FileLoggerPlugin({
+  filePath: './logs/api.log',
+  format: 'json'
+}));
+
+apiLogger.info('API request', { method: 'GET', endpoint: '/users' });
+```
+
+Produces structured JSON output:
+
+```json
+{
+  "timestamp": "2024-01-15T10:30:00.000Z",
+  "level": "info", 
+  "message": "User logged in",
+  "scope": "api",
+  "context": {
+    "userId": "123",
+    "action": "login"
+  }
+}
+```
+
+#### Configuration Options
+
+```typescript
+interface FileLoggerOptions {
+  filePath?: string;          // Path to log file
+  maxSize?: number;           // Max file size before rotation (default: 10MB)
+  rotate?: boolean;           // Enable log rotation (default: true)
+  format?: 'json' | 'text';   // Output format (default: 'json')
+  includeContext?: boolean;   // Include context in logs (default: true)
+  handleScope?: boolean;      // Include logger scope (default: true)
+}
+```
+
+#### Key Features:
+- **Structured JSON**: Rich, queryable log data
+- **Automatic Rotation**: Prevents log files from growing too large
+- **Context Tracking**: Automatically captures log context and metadata
+- **Child Logger Support**: Proper scope inheritance and isolation
+- **Multiple Instances**: Run multiple file loggers simultaneously
+- **Performance Optimized**: Efficient streaming with minimal overhead
 
 ### Performance Tracker Plugin
 

@@ -65,9 +65,20 @@ export declare class SpectralLogger {
      * @param plugin Plugin implementation providing optional `init`, `beforeLog`, and `afterLog` hooks
      */
     use(plugin: Plugin): void;
+    /**
+     * Remove a plugin by name
+     */
+    removePlugin(pluginName: string): void;
+    /**
+     * Get all current plugins
+     */
+    getPlugins(): Plugin[];
     private executePlugins;
-    /** Create a child logger that prefixes messages with a scope label and inherits config/plugins. */
-    child(scope: string): SpectralLogger;
+    /**
+     * Create a child logger that prefixes messages with a scope label.
+     * Por defecto NO hereda los plugins del parent.
+     */
+    child(scope: string, inheritPlugins?: boolean): SpectralLogger;
     flush(): void;
     /**
      * Awaitable flush — ensures it completes before continuing.

@@ -1,3 +1,4 @@
+// types.d.ts
 export type LogLevel = 'log' | 'info' | 'success' | 'warn' | 'error' | 'debug';
 
 export type ColorInput = string;
@@ -27,11 +28,16 @@ export interface LogOptions {
   codec?: BufferEncoding;
   timestamp?: boolean;
   level?: boolean;
+  context?: LoggerContext;
 }
 
 export interface FormattedMessage {
   text: string;
   ansiCode: string;
+}
+
+export interface LoggerContext {
+  [key: string]: any;
 }
 
 export interface Plugin {
