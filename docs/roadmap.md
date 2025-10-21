@@ -440,8 +440,10 @@ description: SpectralLogs development roadmap and future plans
         <p class="timeline-description">
           Introduce structured logging, advanced filtering, and powerful new capabilities for complex applications.
         </p>
-        <ul class="timeline-features planned">
+        <ul class="timeline-features">
           <li>Structured JSON logging</li>
+        </ul>
+        <ul class="timeline-features planned">
           <li>Advanced filtering and search</li>
           <li>Conditional logging with predicates</li>
           <li>Log rotation and archiving</li>
